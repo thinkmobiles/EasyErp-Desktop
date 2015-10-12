@@ -10,7 +10,7 @@ module.exports = function (models) {
     router.get('/getForDD', handler.getForDD);
     router.get('/bySales', handler.getBySales);
     router.get('/byDepartment', handler.byDepartment);
-    router.get('/exportToXlsx',handler.exportToXlsx);
-    router.get('/exportToCsv',handler.exportToCsv);
+    router.post('/exportToXlsx',handler.exportToXlsx);
+    router.post('/exportToCsv',handler.exportToCsv);
     return router;
 };

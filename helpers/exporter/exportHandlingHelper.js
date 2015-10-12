@@ -33,7 +33,7 @@ var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName
 
         var propertiesToDisplay = body.properties;
         var itemIdsToDisplay = body.items;
-        var type = body.type;
+        var type = req.query.type;
 
         var match = {
             $match: type ? {type: type, _id: itemIdsToDisplay} : {_id: itemIdsToDisplay}
