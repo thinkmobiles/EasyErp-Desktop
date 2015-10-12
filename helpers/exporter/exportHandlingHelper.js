@@ -39,6 +39,7 @@ var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName
             $match: type ? {type: type, _id: itemIdsToDisplay} : {_id: itemIdsToDisplay}
         };
 
+
         var project = createProjection(map, {properties: propertiesToDisplay});
         var nameOfFile = fileName ? fileName : type ? type : 'data';
 
