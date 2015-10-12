@@ -85,20 +85,39 @@ var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName
 var addExportToXlsxFunctionToHandler = function (handler, getModel, map, fileName) {
     handler['exportToXlsx'] = function (req, res, next) {
         var Model = getModel(req);
+        var body = req.body;
         var filter = req.body;
         var type = req.query.type;
         var headersArray = [];
+        var itemIdsToDisplay;
+
         var project = createProjection(map, {filter: filter, putHeadersTo: headersArray});
         var nameOfFile = fileName ? fileName : type ? type : 'data';
 
-        Model.aggregate({$match: type ? {type: type} : {}}, {$project: project}, function (err, response) {
+        if (body) {
+            itemIdsToDisplay = body.items;
+        }
+
+        var match = {
+            $match: type ? {type: type} : {}
+        };
+
+        Model.aggregate(match, {$project: project}, function (err, response) {
 
             if (err) {
                 return next(err);
             }
             //todo map objectId to string
+            console.log(response);
 
-            arrayToXlsx.writeFile(nameOfFile + '.xlsx', response, {
+            Model.find(response).populate(['department._id', 'jobPosition._id']).exec(function (err, item) {
+                if (err) {
+                    return next(err);
+                }
+                console.log(item);
+            });
+
+            /*arrayToXlsx.writeFile(nameOfFile + '.xlsx', response, {
                 sheetName : "data",
                 headers   : headersArray,
                 attributes: headersArray
@@ -116,11 +135,13 @@ var addExportToXlsxFunctionToHandler = function (handler, getModel, map, fileNam
                         console.log('done');
                     }
                 });
-            })
+            })*/
 
         });
     }
 };
+
+
 
 exports.addExportToCsvFunctionToHandler = addExportToCsvFunctionToHandler;
 exports.addExportToXlsxFunctionToHandler = addExportToXlsxFunctionToHandler;
