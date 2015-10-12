@@ -35,10 +35,14 @@ var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName
         var itemIdsToDisplay = body.items;
         var type = body.type;
 
+        var match = {
+            $match: type ? {type: type, _id: itemIdsToDisplay} : {_id: itemIdsToDisplay}
+        };
+
         var project = createProjection(map, {properties: propertiesToDisplay});
         var nameOfFile = fileName ? fileName : type ? type : 'data';
 
-        Model.aggregate({$match: type ? {type: type} : {}}, {$project: project}, function (err, response) {
+        Model.aggregate(match, {$project: project}, function (err, response) {
             var writableStream;
 
             if (err) {
