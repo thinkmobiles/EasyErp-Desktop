@@ -3,9 +3,10 @@ define([
         'text!templates/Alpabet/AphabeticTemplate.html',
         'common',
         'dataService',
+        'helpers/exporter'
     ],
 
-    function (paginationTemplate, aphabeticTemplate, common, dataService) {
+    function (paginationTemplate, aphabeticTemplate, common, dataService,exporter) {
         var ListViewBase = Backbone.View.extend({
             el                : '#content-holder',
             defaultItemsNumber: null,
@@ -578,29 +579,52 @@ define([
                 }
             },
 
+            //</editor-fold>
+
+            //<editor-fold desc="Export">
+
             exportToCsv: function () {
+                var url = this.exportToCsvUrl
+                    ? this.exportToCsvUrl
+                    : (this.collection
+                    ? this.collection.url + '/exportToCsv'
+                    : '');
                 //todo change after routes refactoring
-                if (this.exportToCsvUrl) {
-                    window.location = this.exportToCsvUrl;
-                } else {
-                    if (this.collection) {
-                        window.location = this.collection.url + '/exportToCsv';
-                    }
-                }
+
+                this.postAndExport(url)
             },
 
             exportToXlsx: function () {
+                var url = this.exportToXlsxUrl
+                    ? this.exportToXlsxUrl
+                    : (this.collection
+                    ? this.collection.url + '/exportToXlsx'
+                    : '');
                 //todo change after routes refactoring
-                if (this.exportToXlsxUrl) {
-                    window.location = this.exportToXlsxUrl;
-                } else {
-                    if (this.collection) {
-                        window.location = this.collection.url + '/exportToXlsx';
-                    }
-                }
+
+                this.postAndExport(url)
+
+            },
+
+            getSelectedIdsArray: function (context) {
+                var selected = [];
+                context.find('.checkbox:checked').each(function () {
+                    selected.push($(this).val());
+                });
+                return selected;
+            },
+
+            postAndExport: function (url) {
+                var selectedIds = this.getSelectedIdsArray(this.$el);
+                var body = {items: selectedIds};
+
+                $.post(url, body, function (result) {
+                    var downloadUrl = URL.createObjectURL(result);
+                    window.location = downloadUrl;
+                })
             }
 
-            //</editor-fold>
+            // </editor-fold>
 
         });
 
