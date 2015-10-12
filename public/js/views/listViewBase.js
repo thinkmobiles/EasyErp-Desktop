@@ -3,10 +3,9 @@ define([
         'text!templates/Alpabet/AphabeticTemplate.html',
         'common',
         'dataService',
-        'helpers/exporter'
     ],
 
-    function (paginationTemplate, aphabeticTemplate, common, dataService,exporter) {
+    function (paginationTemplate, aphabeticTemplate, common, dataService) {
         var ListViewBase = Backbone.View.extend({
             el                : '#content-holder',
             defaultItemsNumber: null,
