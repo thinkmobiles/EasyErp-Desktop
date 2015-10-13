@@ -12,7 +12,7 @@ var Employee = function (models) {
     //var _ = require('../node_modules/underscore');
 
     var exportHandlingHelper = require('../helpers/exporter/exportHandlingHelper');
-    var exportMap = require('../helpers/csvMap').Employees.aliases;
+    var exportMap = require('../helpers/csvMap').Employees;
     exportHandlingHelper.addExportFunctionsToHandler(this, function (req) {
         return models.get(req.session.lastDb, 'Employee', EmployeeSchema)
     }, exportMap, 'Employees');
