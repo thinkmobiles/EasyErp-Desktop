@@ -51,6 +51,7 @@ var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName
         var project = createProjection(map.aliases, {properties: propertiesToDisplay});
         var nameOfFile = fileName ? fileName : type ? type : 'data';
 
+
         Model.find({'_id': {$in: itemIdsToDisplay}})
             .populate(getPopulate(map.objectIdList))
             .exec(function (err, result) {
@@ -67,17 +68,17 @@ var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName
                             return next(err);
                         }
 
-                        fs.unlink(nameOfFile + '.csv', function (err) {
+                       /* fs.unlink(nameOfFile + '.csv', function (err) {
                             if (err) {
                                 console.log(err)
                             } else {
                                 console.log('done');
                             }
-                        });
+                        });*/
                     });
                 });
                 csv
-                    .write(result, {headers: Object.keys(project)})
+                    .write(result/*, {headers: Object.keys(project)}*/)
                     .pipe(writableStream);
 
                 console.log(result);
@@ -99,14 +100,11 @@ var addExportToXlsxFunctionToHandler = function (handler, getModel, map, fileNam
         var filter = req.body;
         var type = req.query.type;
         var headersArray = [];
-        var itemIdsToDisplay;
+        var itemIdsToDisplay = body["items[]"];
 
-        var project = createProjection(map, {filter: filter, putHeadersTo: headersArray});
+        var project = createProjection(map.aliases, {filter: filter, putHeadersTo: headersArray});
         var nameOfFile = fileName ? fileName : type ? type : 'data';
 
-        if (body) {
-            itemIdsToDisplay = body.items;
-        }
 
         var match = {
             $match: type ? {type: type} : {}
@@ -118,9 +116,8 @@ var addExportToXlsxFunctionToHandler = function (handler, getModel, map, fileNam
                 return next(err);
             }
             //todo map objectId to string
-            console.log(response);
 
-            Model.find(response).populate(['department._id', 'jobPosition._id']).exec(function (err, item) {
+            Model.populate(response, {path: 'Edited By User'}, function (err, item) {
                 if (err) {
                     return next(err);
                 }

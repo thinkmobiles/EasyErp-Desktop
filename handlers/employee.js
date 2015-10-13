@@ -1,31 +1,22 @@
 var mongoose = require('mongoose');
 var async = require('async');
+var exportMap = require('../helpers/csvMap');
+var unfolder = require('../helpers/unfolder');
 
 var Employee = function (models) {
     'use strict';
     /**
      * @module Employee
      */
-    //var access = require("../Modules/additions/access.js")(models);
     var EmployeeSchema = mongoose.Schemas.Employee;
     var ProjectSchema = mongoose.Schemas.Project;
-    //var _ = require('../node_modules/underscore');
 
-    var exportHandlingHelper = require('../helpers/exporter/exportHandlingHelper');
-    var exportMap = require('../helpers/csvMap').Employees;
-    exportHandlingHelper.addExportFunctionsToHandler(this, function (req) {
-        return models.get(req.session.lastDb, 'Employee', EmployeeSchema)
-    }, exportMap, 'Employees');
-    
-    this.getNameAndDepartment = getNameAndDepartment;
-
-    function getNameAndDepartment (db, callback) {
+    function getNameAndDepartment(db, callback) {
         var Employee = models.get(db, 'Employees', EmployeeSchema);
 
         Employee
             .find()
             .select('_id name department')
-            //.populate('department._id', '_id departmentName')
             .sort({'name.first': 1})
             .lean()
             .exec(function (err, employees) {
@@ -39,7 +30,7 @@ var Employee = function (models) {
 
     this.getForDD = function (req, res, next) {
 
-        getNameAndDepartment(req.session.lastDb, function(err, result) {
+        getNameAndDepartment(req.session.lastDb, function (err, result) {
             if (err) {
                 return next(err)
             }
@@ -97,15 +88,15 @@ var Employee = function (models) {
                     employees: {
                         $push: {
                             name: {$concat: ['$name.first', ' ', '$name.last']},
-                            _id: '$_id'
+                            _id : '$_id'
                         }
                     }
                 }
             }, {
                 $project: {
                     department: '$_id',
-                    employees: 1,
-                    _id: 0
+                    employees : 1,
+                    _id       : 0
                 }
             }], function (err, employees) {
                 if (err) {
@@ -121,13 +112,89 @@ var Employee = function (models) {
         var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
 
 
-        Employee.find({_id: {$in: ids}}, {'name': 1,'jobPosition.name': 1, 'department.name': 1}, function (err, result) {
+        Employee.find({_id: {$in: ids}}, {
+            'name'            : 1,
+            'jobPosition.name': 1,
+            'department.name' : 1
+        }, function (err, result) {
             if (err) {
                 return next(err);
             }
 
             res.status(200).send(result);
         });
+
+    };
+
+    this.exportToCsv = function (req, res, next) {
+        var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body["items[]"];
+
+        Employee.find({'_id': {$in: itemIdsToDisplay}})
+            .populate({path: 'relatedUser'})
+            .populate({path: 'department._id'})
+            .populate({path: 'jobPosition._id'})
+            .populate({path: 'manager._id'})
+            .populate({path: 'coach'})
+            .populate({path: 'workflow'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
+            .exec(function (err, result) {
+
+                if (err) {
+                    next(err);
+                    return;
+                }
+
+                console.log(result);
+                /*
+                unfolder.convertToLinearObjects(result, null, function (err, result) {
+
+                    if (err) {
+                        next(err);
+                    }
+                    console.log(result);
+                    res.status(200).send(result);
+                });
+                */
+            });
+
+    };
+
+
+    this.exportToXlsx = function (req, res, next) {
+        var body = req.body;
+        var map = exportMap.Employees;
+        var propertiesToDisplay = body.properties;
+        var itemIdsToDisplay = body["items[]"];
+        var type = req.query.type;
+
+        Model.find({'_id': {$in: itemIdsToDisplay}})
+            .populate({path: "relatedUser"})
+            .populate({path: "visibility"})
+            .populate({path: "department._id"})
+            .populate({path: "jobPosition._id"})
+            .populate({path: "manager._id"})
+            .populate({path: "coach"})
+            .populate({path: "workflow"})
+            .populate({path: "groups.owner"})
+            .populate({path: "groups.users"})
+            .populate({path: "groups.group"})
+            .populate({path: "createdBy.user"})
+            .populate({path: "editedBy.user"})
+            .exec(function (err, result) {
+
+                if (err) {
+                    next(err);
+                }
+
+                console.log(result);
+
+            });
 
     };
 
