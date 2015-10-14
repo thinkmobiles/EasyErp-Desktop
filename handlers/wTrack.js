@@ -21,7 +21,7 @@ var wTrack = function (event, models) {
     var exportMap = require('../helpers/csvMap').wTrack.aliases;
     exportHandlingHelper.addExportFunctionsToHandler(this, function (req) {
         return models.get(req.session.lastDb, 'wTrack', wTrackSchema)
-    }, exportMap, "wTrack");
+    }, exportMap);
 
     this.create = function (req, res, next) {
         access.getEditWritAccess(req, req.session.uId, 75, function (access) {

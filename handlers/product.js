@@ -14,9 +14,10 @@ var Products = function (models) {
 
     var exportHandlingHelper = require('../helpers/exporter/exportHandlingHelper');
     var exportMap = require('../helpers/csvMap').Products.aliases;
+
     exportHandlingHelper.addExportFunctionsToHandler(this, function (req) {
         return models.get(req.session.lastDb, 'Product', ProductSchema)
-    }, exportMap, 'Products');
+    }, exportMap);
 
     this.create = function (req, res, next) {
         var Product = models.get(req.session.lastDb, 'Product', ProductSchema);

@@ -614,8 +614,11 @@ define([
             },
 
             postAndExport: function (url) {
-                var itemIds = this.getSelectedIdsArray(this.$el);
-                var body = JSON.stringify({items: itemIds});
+
+                var body = this.options;
+
+                body.items=this.getSelectedIdsArray(this.$el);
+                body = JSON.stringify(body);
 
                 $.ajax({
                     url    : url,

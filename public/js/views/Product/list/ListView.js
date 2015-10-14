@@ -24,6 +24,7 @@ define([
             contentType             : 'Product',//needs in view.prototype.changeLocationHash
             exportToXlsxUrl         : '/Product/exportToXlsx',
             exportToCsvUrl          : '/Product/exportToCsv',
+            options                 : {fileName: 'Products'},
 
             initialize: function (options) {
                 this.startTime = options.startTime;

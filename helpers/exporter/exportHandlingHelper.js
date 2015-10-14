@@ -91,7 +91,7 @@ var addExportToXlsxFunctionToHandler = function (handler, getModel, map) {
         var fileName=body.fileName;
         var headersArray = [];
 
-        var project = createProjection(map, {filter: filter, putHeadersTo: headersArray});
+        var project = createProjection(map, {putHeadersTo: headersArray});
         var nameOfFile = fileName ? fileName : type ? type : 'data';
         var match;
 
@@ -115,7 +115,7 @@ var addExportToXlsxFunctionToHandler = function (handler, getModel, map) {
                 attributes: headersArray
             });
 
-            res.status(200).send({url: '/download?path=' + nameOfFile + 'xlsx'});
+            res.status(200).send({url: '/download?path=' + nameOfFile + '.xlsx'});
 
         });
     }
@@ -132,7 +132,7 @@ exports.addExportToXlsxFunctionToHandler = addExportToXlsxFunctionToHandler;
  * @param {Object} map - object with all model properties and their names
  * @param {string} [fileName] - name that will be used for export file, without extension. Otherwise will be used "type" from request query, if exist or "data"
  */
-exports.addExportFunctionsToHandler = function (handler, getModel, map, fileName) {
+exports.addExportFunctionsToHandler = function (handler, getModel, map) {
     addExportToCsvFunctionToHandler(handler, getModel, map);
     addExportToXlsxFunctionToHandler(handler, getModel, map);
 };
