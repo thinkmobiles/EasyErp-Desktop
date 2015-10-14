@@ -22,8 +22,9 @@ define([
             formUrl                 : "#easyErp/Persons/form/",
             contentType             : 'Persons',//needs in view.prototype.changeLocationHash
             viewType                : 'list',//needs in view.prototype.changeLocationHash
-            exportToXlsxUrl         : '/Customers/exportToXlsx/type=Person',
-            exportToCsvUrl          : '/Customers/exportToCsv/type=Person',
+            exportToXlsxUrl         : '/Customers/exportToXlsx',
+            exportToCsvUrl          : '/Customers/exportToCsv',
+            options                 : {type: 'Person', fileName: 'Persons'},
             events                  : {
                 "click .letter:not(.empty)": "alpabeticalRender",
             },

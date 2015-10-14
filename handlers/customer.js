@@ -13,6 +13,7 @@ var Customers = function (models) {
 
     var exportHandlingHelper = require('../helpers/exporter/exportHandlingHelper');
     var exportMap = require('../helpers/csvMap').Customers.aliases;
+
     exportHandlingHelper.addExportFunctionsToHandler(this, function (req) {
         return models.get(req.session.lastDb, 'Customer', CustomerSchema)
     }, exportMap);
