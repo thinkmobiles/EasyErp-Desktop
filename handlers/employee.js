@@ -130,19 +130,20 @@ var Employee = function (models) {
         var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
         var body = req.body;
         var itemIdsToDisplay = body["items[]"];
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
 
-        Employee.find({'_id': {$in: itemIdsToDisplay}})
-            .populate({path: 'relatedUser'})
+        Employee.find(query)
+            /*.populate({path: 'relatedUser'})
             .populate({path: 'department._id'})
             .populate({path: 'jobPosition._id'})
-            .populate({path: 'manager._id'})
-            .populate({path: 'coach'})
+            //.populate({path: 'manager._id'})
+            //.populate({path: 'coach'})
             .populate({path: 'workflow'})
             .populate({path: 'groups.owner'})
             .populate({path: 'groups.users'})
             .populate({path: 'groups.group'})
             .populate({path: 'createdBy.user'})
-            .populate({path: 'editedBy.user'})
+            .populate({path: 'editedBy.user'})*/
             .exec(function (err, result) {
 
                 if (err) {
@@ -151,8 +152,8 @@ var Employee = function (models) {
                 }
 
                 console.log(result);
-                /*
-                unfolder.convertToLinearObjects(result, null, function (err, result) {
+
+                unfolder.convertToLinearObjects(result, exportMap.Employees.aliases, function (err, result) {
 
                     if (err) {
                         next(err);
@@ -160,7 +161,7 @@ var Employee = function (models) {
                     console.log(result);
                     res.status(200).send(result);
                 });
-                */
+
             });
 
     };
