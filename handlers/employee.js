@@ -153,7 +153,17 @@ var Employee = function (models) {
 
                 console.log(result);
 
-                unfolder.convertToLinearObjects(result, exportMap.Employees.aliases, function (err, result) {
+                var map = [
+                    {map:"First Name",
+                    property:"name.first"},
+                    {map:"Last Name",
+                    property:"name.last"},
+                    {map:"Photo",
+                    property:"imageSrc"}
+                ];
+
+
+                unfolder.convertToLinearObjects(result, map, function (err, result) {
 
                     if (err) {
                         next(err);

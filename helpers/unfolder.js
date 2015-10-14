@@ -9,15 +9,15 @@ var createMapper = function (element, parentKey, currentKey, currentPropertyName
     }
 
     if (!(element instanceof Object)) {
-        mapValue=currentPropertyName ? currentPropertyName + '.' + currentKey : currentKey;
-        properties.push({map:mapValue,property:mapValue});
+        mapValue = currentPropertyName ? currentPropertyName + '.' + currentKey : currentKey;
+        properties.push({map: mapValue, property: mapValue});
         return;
     }
     keys = Object.keys(element);
 
     if (keys.length === 0) {
-        mapValue=currentPropertyName ? currentPropertyName + '.' + currentKey : currentKey;
-        properties.push({map:mapValue,property:mapValue});
+        mapValue = currentPropertyName ? currentPropertyName + '.' + currentKey : currentKey;
+        properties.push({map: mapValue, property: mapValue});
         return;
     }
 
@@ -53,7 +53,7 @@ var createMap = function (element) {
 var mapObject = function (map, element) {
     var mappedObject = {};
     var propertyMap;
-    for (var i = map.length-1; i >= 0; i--) {
+    for (var i = map.length - 1; i >= 0; i--) {
         propertyMap = map[i];
         mappedObject[propertyMap.map] = getValue(propertyMap.property, element);
     }
@@ -87,7 +87,15 @@ var convertToSimpleObjects = function (map, array) {
  *
  * @param {Function} callback - Callback that will be executed after unfolding objects.
  */
-exports.convertToLinearObjects = function (elements, propertyMapArray,callback) {
-    var tasks = [convertToSimpleObjects(propertyMapArray, elements)];
-    async.series(tasks,callback);
+exports.convertToLinearObjects = function (elements, propertyMapArray, callback) {
+    async.series(
+        {
+            one: function (callback) {
+                var res = convertToSimpleObjects(propertyMapArray, elements);
+                callback(null, res)
+            }
+        }, function (err, results) {
+            callback(null, results.one);
+        }
+    );
 };
