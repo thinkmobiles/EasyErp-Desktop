@@ -20,18 +20,6 @@ var createProjection = function (map, options) {
     return project;
 };
 
-var getPopulate = function (referenceList) {
-    var resPopulate = [];
-
-    if (referenceList) {
-        for (var key in referenceList) {
-            resPopulate.push(key);
-        }
-    }
-
-    return resPopulate;
-};
-
 /**
  * @param {Object} handler - object to insert exportToCsv method
  * @param {Function) getModel - function(req) that will return specified model
@@ -44,46 +32,42 @@ var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName
         var body = req.body;
 
         var propertiesToDisplay = body.properties;
-        var itemIdsToDisplay = body["items[]"];
-        var type = req.query.type;
+        var itemIdsToDisplay = body.items;
+        var type = body.type;
 
-
-        var project = createProjection(map.aliases, {properties: propertiesToDisplay});
+        var project = createProjection(map, {properties: propertiesToDisplay});
         var nameOfFile = fileName ? fileName : type ? type : 'data';
 
+        Model.aggregate({$match: type ? {type: type} : {}}, {$project: project}, function (err, response) {
+            var writableStream;
 
-        Model.find({'_id': {$in: itemIdsToDisplay}})
-            .populate(getPopulate(map.objectIdList))
-            .exec(function (err, result) {
-                var writableStream;
+            if (err) {
+                return next(err);
+            }
 
-                if (err)
-                    return next(err);
+            writableStream = fs.createWriteStream(nameOfFile + ".csv");
 
-                writableStream = fs.createWriteStream(nameOfFile + ".csv");
+            writableStream.on('finish', function () {
+                res.download(nameOfFile + ".csv", nameOfFile + ".csv", function (err) {
+                    if (err) {
+                        return next(err);
+                    }
 
-                writableStream.on('finish', function () {
-                    res.download(nameOfFile + ".csv", nameOfFile + ".csv", function (err) {
+                    fs.unlink(nameOfFile + '.csv', function (err) {
                         if (err) {
-                            return next(err);
+                            console.log(err)
+                        } else {
+                            console.log('done');
                         }
-
-                       /* fs.unlink(nameOfFile + '.csv', function (err) {
-                            if (err) {
-                                console.log(err)
-                            } else {
-                                console.log('done');
-                            }
-                        });*/
                     });
                 });
-                csv
-                    .write(result/*, {headers: Object.keys(project)}*/)
-                    .pipe(writableStream);
-
-                console.log(result);
             });
 
+            csv
+                .write(response, {headers: Object.keys(project)})
+                .pipe(writableStream);
+
+        });
     }
 };
 
@@ -96,58 +80,42 @@ var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName
 var addExportToXlsxFunctionToHandler = function (handler, getModel, map, fileName) {
     handler['exportToXlsx'] = function (req, res, next) {
         var Model = getModel(req);
-        var body = req.body;
         var filter = req.body;
         var type = req.query.type;
         var headersArray = [];
-        var itemIdsToDisplay = body["items[]"];
-
-        var project = createProjection(map.aliases, {filter: filter, putHeadersTo: headersArray});
+        var project = createProjection(map, {filter: filter, putHeadersTo: headersArray});
         var nameOfFile = fileName ? fileName : type ? type : 'data';
 
-
-        var match = {
-            $match: type ? {type: type} : {}
-        };
-
-        Model.aggregate(match, {$project: project}, function (err, response) {
+        Model.aggregate({$match: type ? {type: type} : {}}, {$project: project}, function (err, response) {
 
             if (err) {
                 return next(err);
             }
             //todo map objectId to string
 
-            Model.populate(response, {path: 'Edited By User'}, function (err, item) {
+            arrayToXlsx.writeFile(nameOfFile + '.xlsx', response, {
+                sheetName : "data",
+                headers   : headersArray,
+                attributes: headersArray
+            });
+
+            res.download(nameOfFile + '.xlsx', nameOfFile + '.xlsx', function (err) {
                 if (err) {
                     return next(err);
                 }
-                console.log(item);
-            });
 
-            /*arrayToXlsx.writeFile(nameOfFile + '.xlsx', response, {
-             sheetName : "data",
-             headers   : headersArray,
-             attributes: headersArray
-             });
-
-             res.download(nameOfFile + '.xlsx', nameOfFile + '.xlsx', function (err) {
-             if (err) {
-             return next(err);
-             }
-
-             fs.unlink(nameOfFile + '.xlsx', function (err) {
-             if (err) {
-             console.log(err)
-             } else {
-             console.log('done');
-             }
-             });
-             })*/
+                fs.unlink(nameOfFile + '.xlsx', function (err) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        console.log('done');
+                    }
+                });
+            })
 
         });
     }
 };
-
 
 exports.addExportToCsvFunctionToHandler = addExportToCsvFunctionToHandler;
 exports.addExportToXlsxFunctionToHandler = addExportToXlsxFunctionToHandler;
