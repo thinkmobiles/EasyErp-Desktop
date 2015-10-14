@@ -88,6 +88,6 @@ var convertToSimpleObjects = function (map, array) {
  * @param {Function} callback - Callback that will be executed after unfolding objects.
  */
 exports.convertToLinearObjects = function (elements, propertyMapArray,callback) {
-    var tasks = convertToSimpleObjects(propertyMapArray, elements);
-    async.series(convertToSimpleObjects, tasks);
+    var tasks = [convertToSimpleObjects(propertyMapArray, elements)];
+    async.series(tasks,callback);
 };

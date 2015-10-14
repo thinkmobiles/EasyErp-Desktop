@@ -150,8 +150,13 @@ var Employee = function (models) {
                     return;
                 }
 
-                console.log(result);
-                /*
+              //  console.log(result);
+
+                for (var i=result.length-1;i>=0;i--){
+                    result[i]=result[i]._doc;
+                }
+
+
                 unfolder.convertToLinearObjects(result, null, function (err, result) {
 
                     if (err) {
@@ -160,7 +165,7 @@ var Employee = function (models) {
                     console.log(result);
                     res.status(200).send(result);
                 });
-                */
+
             });
 
     };
