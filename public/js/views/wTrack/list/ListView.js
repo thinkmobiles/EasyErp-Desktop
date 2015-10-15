@@ -39,6 +39,7 @@ define([
             changedModels           : {},
             exportToCsvUrl          : '/wTrack/exportToCsv',
             exportToXlsxUrl         : '/wTrack/exportToXlsx',
+            options                 : {fileName: 'wTrack'},
 
             initialize: function (options) {
                 this.startTime = options.startTime;

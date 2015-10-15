@@ -614,27 +614,24 @@ define([
             },
 
             postAndExport: function (url) {
-                var itemIds = this.getSelectedIdsArray(this.$el);
-                var body = {items:itemIds};
 
-                //var download = function (url, inputName, inputValue, method) {
-                //    //url and data options required
-                //    if (url && inputName && inputValue) {
-                //
-                //        var inputs = '<input type="hidden" name="' + inputName + '" value="' + JSON.stringify(inputValue) + '" />';
-                //
-                //        $('<form action="' + url + '" method="' + (method || 'post') + '">' + inputs + '</form>')
-                //            .appendTo('body').submit().remove();
-                //    }
-                //    ;
-                //};
-                //
-                //download(url, 'items',body, 'post');
-                  $.post(url, body, function (result) {
-                       //download(result);
-                 var downloadUrl = window.webkitURL.createObjectURL(result);
-                 window.location=downloadUrl;// = downloadUrl;
-                  })
+                var body = this.options;
+
+                body.items=this.getSelectedIdsArray(this.$el);
+                body = JSON.stringify(body);
+
+                $.ajax({
+                    url    : url,
+                    type   : "POST",
+                    data   : body,
+                    contentType:'application/json',
+                    success: function (resp) {
+                        window.location=resp.url;
+                    },
+                    error:function(err){
+                        alert(err);
+                    }
+                });
             }
 
             // </editor-fold>

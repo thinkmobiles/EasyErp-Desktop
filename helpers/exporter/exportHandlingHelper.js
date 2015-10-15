@@ -2,10 +2,9 @@ var csv = require('fast-csv');
 var fs = require('fs');
 var arrayToXlsx = require('../exporter/arrayToXlsx');
 
-
 var createProjection = function (map, options) {
     var project = {};
-    var filter = options.filter;
+    var properties = options.properties;
     var arrayToAdd = options.putHeadersTo;
     var addHeaders = !!arrayToAdd;
     var value;
@@ -15,7 +14,7 @@ var createProjection = function (map, options) {
         if (addHeaders) {
             arrayToAdd.push(value);
         }
-        //todo remove some properties from map according to filter
+        //todo remove some properties from map according to {properties}
         project[value] = '$' + key;
     }
     return project;
@@ -27,44 +26,50 @@ var createProjection = function (map, options) {
  * @param {Object} map - object with all model properties and their names
  * @param {string fileName - name that will be used for export file, without extension
  */
-var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName) {
+var addExportToCsvFunctionToHandler = function (handler, getModel, map) {
     handler['exportToCsv'] = function (req, res, next) {
         var Model = getModel(req);
-        var filter = req.body;
-        var type = req.query.type;
-        var project = createProjection(map, {filter: filter});
+        var body = req.body;
+
+        var propertiesToDisplay = body.properties;
+        var itemIdsToDisplay = body.items;
+
+        var type = body.type;
+        var fileName=body.fileName;
+
+        var project = createProjection(map, {properties: propertiesToDisplay});
         var nameOfFile = fileName ? fileName : type ? type : 'data';
 
-        Model.aggregate({$match: type ? {type: type} : {}}, {$project: project}, function (err, response) {
-            var writableStream;
+        var match;
 
-            if (err) {
-                return next(err);
-            }
+        itemIdsToDisplay = itemIdsToDisplay.objectID();
+        match = {_id: {$in: itemIdsToDisplay}};
 
-            writableStream = fs.createWriteStream(nameOfFile + ".csv");
+        if (type) {
+            match.type = type;
+        }
 
-            writableStream.on('finish', function () {
-                res.download(nameOfFile + ".csv", nameOfFile + ".csv", function (err) {
-                    if (err) {
-                        return next(err);
-                    }
+        Model.aggregate(
+            {$match: match},
+            {$project: project},
+            function (err, response) {
+                var writableStream;
 
-                    fs.unlink(nameOfFile + '.csv', function (err) {
-                        if (err) {
-                            console.log(err)
-                        } else {
-                            console.log('done');
-                        }
-                    });
+                if (err) {
+                    return next(err);
+                }
+
+                writableStream = fs.createWriteStream(nameOfFile + ".csv");
+
+                writableStream.on('finish', function () {
+                    res.status(200).send({url: '/download?path=' + nameOfFile + '.csv'});
                 });
+
+                csv
+                    .write(response, {headers: Object.keys(project)})
+                    .pipe(writableStream);
+
             });
-
-            csv
-                .write(response, {headers: Object.keys(project)})
-                .pipe(writableStream);
-
-        });
     }
 };
 
@@ -74,16 +79,30 @@ var addExportToCsvFunctionToHandler = function (handler, getModel, map, fileName
  * @param {Object} map - object with all model properties and their names
  * @param {string} fileName - name that will be used for export file, without extension
  */
-var addExportToXlsxFunctionToHandler = function (handler, getModel, map, fileName) {
+var addExportToXlsxFunctionToHandler = function (handler, getModel, map) {
     handler['exportToXlsx'] = function (req, res, next) {
         var Model = getModel(req);
-        var filter = req.body;
-        var type = req.query.type;
-        var headersArray = [];
-        var project = createProjection(map, {filter: filter, putHeadersTo: headersArray});
-        var nameOfFile = fileName ? fileName : type ? type : 'data';
+        var body = req.body;
 
-        Model.aggregate({$match: type ? {type: type} : {}}, {$project: project}, function (err, response) {
+        var propertiesToDisplay = body.properties;
+        var itemIdsToDisplay = body.items;
+
+        var type = body.type;
+        var fileName=body.fileName;
+        var headersArray = [];
+
+        var project = createProjection(map, {putHeadersTo: headersArray});
+        var nameOfFile = fileName ? fileName : type ? type : 'data';
+        var match;
+
+        itemIdsToDisplay = itemIdsToDisplay.objectID();
+        match = {_id: {$in: itemIdsToDisplay}};
+
+        if (type) {
+            match.type = type;
+        }
+
+        Model.aggregate({$match: match}, {$project: project}, function (err, response) {
 
             if (err) {
                 return next(err);
@@ -96,19 +115,7 @@ var addExportToXlsxFunctionToHandler = function (handler, getModel, map, fileNam
                 attributes: headersArray
             });
 
-            res.download(nameOfFile + '.xlsx', nameOfFile + '.xlsx', function (err) {
-                if (err) {
-                    return next(err);
-                }
-
-                fs.unlink(nameOfFile + '.xlsx', function (err) {
-                    if (err) {
-                        console.log(err)
-                    } else {
-                        console.log('done');
-                    }
-                });
-            })
+            res.status(200).send({url: '/download?path=' + nameOfFile + '.xlsx'});
 
         });
     }
@@ -125,7 +132,7 @@ exports.addExportToXlsxFunctionToHandler = addExportToXlsxFunctionToHandler;
  * @param {Object} map - object with all model properties and their names
  * @param {string} [fileName] - name that will be used for export file, without extension. Otherwise will be used "type" from request query, if exist or "data"
  */
-exports.addExportFunctionsToHandler = function (handler, getModel, map, fileName) {
-    addExportToCsvFunctionToHandler(handler, getModel, map, fileName);
-    addExportToXlsxFunctionToHandler(handler, getModel, map, fileName);
+exports.addExportFunctionsToHandler = function (handler, getModel, map) {
+    addExportToCsvFunctionToHandler(handler, getModel, map);
+    addExportToXlsxFunctionToHandler(handler, getModel, map);
 };

@@ -121,6 +121,7 @@ var Employee = function (models) {
         var ids = req.query.data;
         var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
 
+
         Employee.find({_id: {$in: ids}}, {
             'name'            : 1,
             'jobPosition.name': 1,
@@ -135,6 +136,7 @@ var Employee = function (models) {
 
     };
 
+     this.exportToCsv = function (req, res, next) {
     this.exportToCsvFullData = function (req, res, next) {
         var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
         var body = req.body;

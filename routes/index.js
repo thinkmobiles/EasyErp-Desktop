@@ -1,4 +1,3 @@
-
 require('pmx').init();
 
 module.exports = function (app, mainDb) {
@@ -88,6 +87,23 @@ module.exports = function (app, mainDb) {
     app.use('/category', productCategoriesRouter);
     app.use('/customers', customersRouter);
     app.use('/capacity', capacityRouter);
+
+    app.get('/download', function (req, res, next) {
+        var path = req.query.path;
+
+        res.download(path, path, function (err) {
+            if (err) {
+                return next(err);
+            }
+            fs.unlink(path, function (err) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log('done');
+                }
+            });
+        });
+    });
     app.get('/getDBS', function (req, res) {
         res.send(200, {dbsNames: dbsNames});
     });
@@ -130,13 +146,15 @@ module.exports = function (app, mainDb) {
         fs.readdir(dir, function (err, files) {
             if (err) {
                 fs.mkdir(dir, function (errr) {
-                    if (!errr)
+                    if (!errr) {
                         dir += req.headers.id;
+                    }
                     fs.mkdir(dir, function (errr) {
-                        if (!errr)
+                        if (!errr) {
                             uploadFileArray(req, res, function (files) {
                                 requestHandler.uploadFile(req, res, req.headers.id, files);
                             });
+                        }
                     });
                 });
             } else {
@@ -144,10 +162,11 @@ module.exports = function (app, mainDb) {
                 fs.readdir(dir, function (err, files) {
                     if (err) {
                         fs.mkdir(dir, function (errr) {
-                            if (!errr)
+                            if (!errr) {
                                 uploadFileArray(req, res, function (files) {
                                     requestHandler.uploadFile(req, res, req.headers.id, files);
                                 });
+                            }
                         });
                     } else {
                         uploadFileArray(req, res, function (files) {
@@ -164,7 +183,7 @@ module.exports = function (app, mainDb) {
         res.download(__dirname + path);
     });
 
-    function uploadFileArray (req, res, callback) {
+    function uploadFileArray(req, res, callback) {
         var files = [];
         if (req.files && !req.files.attachfile.length) {
             req.files.attachfile = [req.files.attachfile];
@@ -281,13 +300,15 @@ module.exports = function (app, mainDb) {
         fs.readdir(dir, function (err, files) {
             if (err) {
                 fs.mkdir(dir, function (errr) {
-                    if (!errr)
+                    if (!errr) {
                         dir += req.headers.id;
+                    }
                     fs.mkdir(dir, function (errr) {
-                        if (!errr)
+                        if (!errr) {
                             uploadFileArray(req, res, function (files) {
                                 requestHandler.uploadApplicationFile(req, res, req.headers.id, files);
                             });
+                        }
                     });
                 });
             } else {
@@ -295,10 +316,11 @@ module.exports = function (app, mainDb) {
                 fs.readdir(dir, function (err, files) {
                     if (err) {
                         fs.mkdir(dir, function (errr) {
-                            if (!errr)
+                            if (!errr) {
                                 uploadFileArray(req, res, function (files) {
                                     requestHandler.uploadApplicationFile(req, res, req.headers.id, files);
                                 });
+                            }
                         });
                     } else {
                         uploadFileArray(req, res, function (files) {
@@ -328,13 +350,15 @@ module.exports = function (app, mainDb) {
         fs.readdir(dir, function (err, files) {
             if (err) {
                 fs.mkdir(dir, function (errr) {
-                    if (!errr)
+                    if (!errr) {
                         dir += req.headers.id;
+                    }
                     fs.mkdir(dir, function (errr) {
-                        if (!errr)
+                        if (!errr) {
                             uploadFileArray(req, res, function (files) {
                                 requestHandler.uploadEmployeesFile(req, res, req.headers.id, files);
                             });
+                        }
                     });
                 });
             } else {
@@ -342,10 +366,11 @@ module.exports = function (app, mainDb) {
                 fs.readdir(dir, function (err, files) {
                     if (err) {
                         fs.mkdir(dir, function (errr) {
-                            if (!errr)
+                            if (!errr) {
                                 uploadFileArray(req, res, function (files) {
                                     requestHandler.uploadEmployeesFile(req, res, req.headers.id, files);
                                 });
+                            }
                         });
                     } else {
                         uploadFileArray(req, res, function (files) {
@@ -375,13 +400,15 @@ module.exports = function (app, mainDb) {
         fs.readdir(dir, function (err, files) {
             if (err) {
                 fs.mkdir(dir, function (errr) {
-                    if (!errr)
+                    if (!errr) {
                         dir += req.headers.id;
+                    }
                     fs.mkdir(dir, function (errr) {
-                        if (!errr)
+                        if (!errr) {
                             uploadFileArray(req, res, function (files) {
                                 requestHandler.uploadProjectsFiles(req, res, req.headers.id, files);
                             });
+                        }
                     });
                 });
             } else {
@@ -389,10 +416,11 @@ module.exports = function (app, mainDb) {
                 fs.readdir(dir, function (err, files) {
                     if (err) {
                         fs.mkdir(dir, function (errr) {
-                            if (!errr)
+                            if (!errr) {
                                 uploadFileArray(req, res, function (files) {
                                     requestHandler.uploadProjectsFiles(req, res, req.headers.id, files);
                                 });
+                            }
                         });
                     } else {
                         uploadFileArray(req, res, function (files) {
@@ -422,13 +450,15 @@ module.exports = function (app, mainDb) {
         fs.readdir(dir, function (err, files) {
             if (err) {
                 fs.mkdir(dir, function (errr) {
-                    if (!errr)
+                    if (!errr) {
                         dir += req.headers.id;
+                    }
                     fs.mkdir(dir, function (errr) {
-                        if (!errr)
+                        if (!errr) {
                             uploadFileArray(req, res, function (files) {
                                 requestHandler.uploadTasksFiles(req, res, req.headers.id, files);
                             });
+                        }
                     });
                 });
             } else {
@@ -436,10 +466,11 @@ module.exports = function (app, mainDb) {
                 fs.readdir(dir, function (err, files) {
                     if (err) {
                         fs.mkdir(dir, function (errr) {
-                            if (!errr)
+                            if (!errr) {
                                 uploadFileArray(req, res, function (files) {
                                     requestHandler.uploadTasksFiles(req, res, req.headers.id, files);
                                 });
+                            }
                         });
                     } else {
                         uploadFileArray(req, res, function (files) {
@@ -470,13 +501,15 @@ module.exports = function (app, mainDb) {
         fs.readdir(dir, function (err, files) {
             if (err) {
                 fs.mkdir(dir, function (errr) {
-                    if (!errr)
+                    if (!errr) {
                         dir += req.headers.id;
+                    }
                     fs.mkdir(dir, function (errr) {
-                        if (!errr)
+                        if (!errr) {
                             uploadFileArray(req, res, function (files) {
                                 requestHandler.uploadOpportunitiesFiles(req, res, req.headers.id, files);
                             });
+                        }
                     });
                 });
             } else {
@@ -484,10 +517,11 @@ module.exports = function (app, mainDb) {
                 fs.readdir(dir, function (err, files) {
                     if (err) {
                         fs.mkdir(dir, function (errr) {
-                            if (!errr)
+                            if (!errr) {
                                 uploadFileArray(req, res, function (files) {
                                     requestHandler.uploadOpportunitiesFiles(req, res, req.headers.id, files);
                                 });
+                            }
                         });
                     } else {
                         uploadFileArray(req, res, function (files) {
@@ -546,7 +580,7 @@ module.exports = function (app, mainDb) {
 
     app.patch('/currentUser', function (req, res) {
         var data = {};
-        if (req.body){
+        if (req.body) {
             data.savedFilters = req.body;
         }
 
@@ -620,7 +654,6 @@ module.exports = function (app, mainDb) {
     });
 
 //-----------------END----Users--and Profiles-----------------------------------------------
-
 
 //-----------------------------getTotalLength---------------------------------------------
     app.get('/totalCollectionLength/:contentType', function (req, res, next) {
@@ -746,7 +779,6 @@ module.exports = function (app, mainDb) {
         requestHandler.getProjectType(req, res);
     });
 
-
     app.get('/Projects/form/:_id', function (req, res) {
         var data = {};
         data.id = req.params._id;
@@ -807,7 +839,6 @@ module.exports = function (app, mainDb) {
                 break;
         }
     });
-
 
 //--------------Tasks----------------------------------------------------------
     app.get('/getTasksLengthByWorkflows', function (req, res) {
@@ -1055,7 +1086,6 @@ module.exports = function (app, mainDb) {
         requestHandler.removeJobPosition(req, res, id);
     });
 
-
 //------------------Departments---------------------------------------------------
     app.get('/Departments', function (req, res) {
         requestHandler.getDepartment(req, res);
@@ -1103,7 +1133,6 @@ module.exports = function (app, mainDb) {
         var id = req.param('id');
         requestHandler.getDepartmentForEditDd(req, res, id);
     });
-
 
 //------------------Employee---------------------------------------------------
 
@@ -1199,7 +1228,6 @@ module.exports = function (app, mainDb) {
                 requestHandler.getApplicationsForKanban(req, res, data);
                 break;
         }
-
 
     });
 
@@ -1374,9 +1402,8 @@ module.exports = function (app, mainDb) {
         }
     });
 
-    function notFound (req, res, next) {
-       res.status(404);
-
+    function notFound(req, res, next) {
+        res.status(404);
 
         if (req.accepts('html')) {
             return res.send(RESPONSES.PAGE_NOT_FOUND);
@@ -1391,7 +1418,7 @@ module.exports = function (app, mainDb) {
 
     };
 
-    function errorHandler (err, req, res, next) {
+    function errorHandler(err, req, res, next) {
         var status = err.status || 500;
 
         if (process.env.NODE_ENV === 'production') {

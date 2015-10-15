@@ -1,3 +1,5 @@
+
+
 var express = require('express');
 var router = express.Router();
 var wTrackHandler = require('../handlers/wTrack');
@@ -6,8 +8,8 @@ module.exports = function (event, models) {
     var handler = new wTrackHandler(event, models);
 
     router.get('/getForProjects', handler.getForProjects);
-    router.post('/exportToXlsx', handler.exportToXlsx);
-    router.post('/exportToCsv', handler.exportToCsv);
+    router.post('/exportToXlsx',handler.exportToXlsx);
+    router.post('/exportToCsv',handler.exportToCsv);
     router.get('/totalCollectionLength', handler.totalCollectionLength);
     router.get('/dash', handler.getForDashVacation);
     router.get('/:viewType', handler.getByViewType);
