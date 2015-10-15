@@ -27,6 +27,7 @@ define([
                 "click"                    : "hideItemsNumber",
                 "click .letter:not(.empty)": "alpabeticalRender"
             },
+            options                 : {fileName: 'Employees'},
 
             initialize: function (options) {
                 this.startTime = options.startTime;

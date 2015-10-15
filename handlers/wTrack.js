@@ -1536,7 +1536,7 @@ var wTrack = function (event, models) {
     this.exportToCsvFullData = function (req, res, next) {
         var WTrack = models.get(req.session.lastDb, 'wTrack', wTrackSchema);
         var body = req.body;
-        var itemIdsToDisplay = body["items[]"];
+        var itemIdsToDisplay = body.items;
         var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
         var fileUnic = new Date().toISOString();
         var nameOfFile = "wTrack_" + fileUnic + ".csv";
@@ -1560,7 +1560,7 @@ var wTrack = function (event, models) {
                     return;
                 }
                 console.log(result);
-                unfolder.convertToLinearObjects(result, exportFullMap.Employees.map, function (err, result) {
+                unfolder.convertToLinearObjects(result, exportFullMap.WTrack.map, function (err, result) {
                     var writableStream;
 
                     if (err) {
@@ -1568,15 +1568,10 @@ var wTrack = function (event, models) {
                     }
                     writableStream = fs.createWriteStream(nameOfFile);
                     writableStream.on('finish', function () {
-                        res.sendfile(nameOfFile, function (err) {
-                            if (err) {
-                                return next(err);
-                            }
-
-                        });
+                        res.status(200).send({url: '/download?path=' + nameOfFile});
                     });
                     csv
-                        .write(result, {headers: getHeaders(exportFullMap.Employees.map)})
+                        .write(result, {headers: getHeaders(exportFullMap.WTrack.map)})
                         .pipe(writableStream);
                 });
 
@@ -1584,8 +1579,60 @@ var wTrack = function (event, models) {
 
     };
 
-    this.exportToXlsxFullData = function (req, res, next) {}
+    this.exportToXlsxFullData = function (req, res, next) {
+        var WTrack = models.get(req.session.lastDb, 'wTrack', wTrackSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body.items;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "wTrack_" + fileUnic + ".xlsx";
+        var headersArray = getHeaders(exportFullMap.WTrack.map);
 
+        WTrack.find(query)
+            .populate({path: 'project._id'})
+            .populate({path: 'department._id'})
+            .populate({path: 'projectmanager._id'})
+            .populate({path: 'customer._id'})
+            .populate({path: 'invoice'})
+            .populate({path: 'employees'})
+            .populate({path: 'workflow._id'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
+            .exec(function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                console.log(result);
+                unfolder.convertToLinearObjects(result, exportFullMap.WTrack.map, function (err, result) {
+                    if (err) {
+                        next(err);
+                    }
+
+                    arrayToXlsx.writeFile(nameOfFile, result, {
+                        sheetName : "data",
+                        headers   : headersArray,
+                        attributes: headersArray
+                    });
+                    res.status(200).send({url: '/download?path=' + nameOfFile});
+
+                });
+
+            });
+
+
+    }
+
+    function getHeaders(maps) {
+        var headers = [];
+        for (var i = 0; i < maps.length; i++) {
+            headers.push(maps[i].map);
+        }
+        return headers;
+    }
 
 };
 

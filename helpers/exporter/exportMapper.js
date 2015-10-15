@@ -658,7 +658,7 @@ module.exports = (function () {
                 property: "groups.users"
             },
             {
-                map     : "Groups Owner",
+                map     : "Groups",
                 property: "groups.Group"
             },
             {
@@ -694,17 +694,149 @@ module.exports = (function () {
                 property: "companyInfo.size"
             },
             {
-                map     : "Edited By User",
-                property: "Company Industry"
+                map     : "Company Industry",
+                property: "companyInfo.industry"
             }
 
         ]
     };
 
+    var project = {
+        map: [
+            {
+                map     : "Project Short Desc",
+                property: "projectShortDesc"
+            },
+            {
+                map     : "Project Name",
+                property: "projectName"
+            },
+            {
+                map     : "Task",
+                property: "task"
+            },
+            {
+                map     : "Customer Name",
+                property: "customername"
+            },
+            {
+                map     : "Project Manager Name",
+                property: "projectmanager.name"
+            },
+            {
+                map     : "Description",
+                property: "description"
+            },
+            {
+                map     : "Who Can RW",
+                property: "whoCanRW"
+            },
+            {
+                map     : "Groups Owner",
+                property: "groups.owner"
+            },
+            {
+                map     : "Groups Users",
+                property: "groups.users"
+            },
+            {
+                map     : "Groups",
+                property: "groups.Group"
+            },
+            {
+                map     : "Start Date",
+                property: "StartDate"
+            },
+            {
+                map     : "End Date",
+                property: "EndDate"
+            },
+            {
+                map     : "Target End Date",
+                property: "TargetEndDate"
+            },
+            {
+                map     : "Sequence",
+                property: "sequence"
+            },
+            {
+                map     : "Parent",
+                property: "parent"
+            },
+            {
+                map     : "Workflow Name",
+                property: "workflow.name"
+            },
+            {
+                map     : "Estimated",
+                property: "estimated"
+            },
+            {
+                map     : "Logged",
+                property: "logged"
+            },
+            {
+                map     : "Remaining",
+                property: "remaining"
+            },
+            {
+                map     : "Progress",
+                property: "progress"
+            },
+            {
+                map     : "Created By Date",
+                property: "createdBy.date"
+            },
+            {
+                map     : "Created By User",
+                property: "createdBy.user.login"
+            },
+            {
+                map     : "Project Type",
+                property: "Project.projecttype"
+            },
+            {
+                map     : "Notes",
+                property: "notes"
+            },
+            {
+                map     : "Attachments",
+                property: "attachments"
+            },
+            {
+                map     : "Edited By Date",
+                property: "editedBy.date"
+            },
+            {
+                map     : "Edited By User",
+                property: "editedBy.user.login"
+            },
+            {
+                map     : "Health",
+                property: "health"
+            }
+
+        ]
+
+/*
+
+            'bonus.employeeId'   : 'Bonus Employee Id',
+            'bonus.bonusId'      : 'Bonus Id',
+            'bonus.startDate'    : 'Bonus Start Date',
+            'bonus.startWeek'    : 'Bonus Start Week',
+            'bonus.startYear'    : 'Bonus Start Year',
+            'bonus.endDate'      : 'Bonus End Date',
+            'bonus.endWeek'      : 'Bonus End Week',
+            'bonus.endYear'      : 'Bonus End Year'
+            */
+
+    };
+
     return {
         Employees: employees,
         WTrack   : weTrack,
-        Customers: customers
+        Customers: customers,
+        Project  : project
     }
 
 })();

@@ -136,11 +136,10 @@ var Employee = function (models) {
 
     };
 
-     this.exportToCsv = function (req, res, next) {
     this.exportToCsvFullData = function (req, res, next) {
         var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
         var body = req.body;
-        var itemIdsToDisplay = body["items[]"];
+        var itemIdsToDisplay = body.items;
         var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
         var fileUnic = new Date().toISOString();
         var nameOfFile = "Employees_" + fileUnic + ".csv";
@@ -170,12 +169,7 @@ var Employee = function (models) {
                     }
                     writableStream = fs.createWriteStream(nameOfFile);
                     writableStream.on('finish', function () {
-                        res.sendfile(nameOfFile, function (err) {
-                            if (err) {
-                                return next(err);
-                            }
-
-                        });
+                        res.status(200).send({url: '/download?path=' + nameOfFile});
                     });
                     csv
                         .write(result, {headers: getHeaders(exportFullMap.Employees.map)})
@@ -189,7 +183,7 @@ var Employee = function (models) {
     this.exportToXlsxFullData = function (req, res, next) {
         var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
         var body = req.body;
-        var itemIdsToDisplay = body["items[]"];
+        var itemIdsToDisplay = body.items;
         var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
         var fileUnic = new Date().toISOString();
         var nameOfFile = "Employees_" + fileUnic + ".xlsx";
@@ -222,23 +216,13 @@ var Employee = function (models) {
                         headers   : headersArray,
                         attributes: headersArray
                     });
-                    res.sendfile(nameOfFile, function (err) {
-
-                        if (err) {
-                            return next(err);
-                        }
-                        /* fs.unlink(nameOfFile, function (err) {
-                         if (err) {
-                         console.log(err)
-                         } else {
-                         console.log('done');
-                         }
-                         });*/
-                    });
+                    res.status(200).send({url: '/download?path=' + nameOfFile});
 
                 });
 
             });
+
+
 
     };
 
@@ -249,6 +233,7 @@ var Employee = function (models) {
         }
         return headers;
     }
+
 
 };
 /**

@@ -583,22 +583,24 @@ define([
             //<editor-fold desc="Export">
 
             exportToCsv: function () {
-                var url = this.exportToCsvUrl
+                var url = 'customers/exportToCsvFullData';
+                /*var url = this.exportToCsvUrl
                     ? this.exportToCsvUrl
                     : (this.collection
-                    ? this.collection.url + '/exportToCsv'
-                    : '');
+                    ? this.collection.url + '/exportToCsvFullData'
+                    : '');*/
                 //todo change after routes refactoring
 
                 this.postAndExport(url)
             },
 
             exportToXlsx: function () {
-                var url = this.exportToXlsxUrl
+                var url = 'customers/exportToXlsxFullData';
+                /*var url = this.exportToXlsxUrl
                     ? this.exportToXlsxUrl
                     : (this.collection
-                    ? this.collection.url + '/exportToXlsx'
-                    : '');
+                    ? this.collection.url + '/exportToXlsxFullData'
+                    : '');*/
                 //todo change after routes refactoring
 
                 this.postAndExport(url)

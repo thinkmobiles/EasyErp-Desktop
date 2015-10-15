@@ -676,6 +676,92 @@ var Products = function (models) {
         });
     };
 
+    this.exportToCsvFullData = function (req, res, next) {
+        var Product = models.get(req.session.lastDb, 'Product', ProductSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body.items;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "Product_" + fileUnic + ".csv";
+
+        Product.find(query)
+            .populate({path: 'relatedUser'})
+            .exec(function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                unfolder.convertToLinearObjects(result, exportFullMap.Product.map, function (err, result) {
+                    var writableStream;
+
+                    if (err) {
+                        next(err);
+                    }
+                    writableStream = fs.createWriteStream(nameOfFile);
+                    writableStream.on('finish', function () {
+                        res.status(200).send({url: '/download?path=' + nameOfFile});
+                    });
+                    csv
+                        .write(result, {headers: getHeaders(exportFullMap.Product.map)})
+                        .pipe(writableStream);
+                });
+
+            });
+
+    };
+
+    this.exportToXlsxFullData = function (req, res, next) {
+        var Product = models.get(req.session.lastDb, 'Product', ProductSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body.items;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "Product_" + fileUnic + ".xlsx";
+        var headersArray = getHeaders(exportFullMap.Product.map);
+
+        Product.find(query)
+            .populate({path: 'relatedUser'})
+            .populate({path: 'department._id'})
+            .populate({path: 'jobPosition._id'})
+            .populate({path: 'manager._id'})
+            .populate({path: 'coach'})
+            .populate({path: 'workflow'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
+            .exec(function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                unfolder.convertToLinearObjects(result, exportFullMap.Product.map, function (err, result) {
+
+                    if (err) {
+                        next(err);
+                    }
+                    arrayToXlsx.writeFile(nameOfFile, result, {
+                        sheetName : "data",
+                        headers   : headersArray,
+                        attributes: headersArray
+                    });
+                    res.status(200).send({url: '/download?path=' + nameOfFile});
+
+                });
+
+            });
+
+    };
+
+    function getHeaders(maps) {
+        var headers = [];
+        for (var i = 0; i < maps.length; i++) {
+            headers.push(maps[i].map);
+        }
+        return headers;
+    }
+
 };
 
 module.exports = Products;
