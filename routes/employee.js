@@ -12,5 +12,8 @@ module.exports = function (models) {
     router.get('/byDepartment', handler.byDepartment);
     router.post('/exportToXlsx',handler.exportToXlsx);
     router.post('/exportToCsv',handler.exportToCsv);
+    router.post('/exportToXlsxFullData',handler.exportToXlsxFullData);
+    router.post('/exportToCsvFullData',handler.exportToCsvFullData);
+    //FullData
     return router;
 };

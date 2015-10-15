@@ -1,7 +1,10 @@
 var mongoose = require('mongoose');
 var async = require('async');
-var exportMap = require('../helpers/csvMap');
+var exportFullMap = require('../helpers/exporter/exportMapper');
 var unfolder = require('../helpers/unfolder');
+var arrayToXlsx = require('../helpers/exporter/arrayToXlsx');
+var csv = require('fast-csv');
+var fs = require('fs');
 
 var Employee = function (models) {
     'use strict';
@@ -10,6 +13,13 @@ var Employee = function (models) {
      */
     var EmployeeSchema = mongoose.Schemas.Employee;
     var ProjectSchema = mongoose.Schemas.Project;
+
+    var exportHandlingHelper = require('../helpers/exporter/exportHandlingHelper');
+    var exportMap = require('../helpers/csvMap').Employees.aliases;
+    exportHandlingHelper.addExportFunctionsToHandler(this, function (req) {
+        return models.get(req.session.lastDb, 'Employee', EmployeeSchema)
+    }, exportMap, 'Employees');
+
 
     function getNameAndDepartment(db, callback) {
         var Employee = models.get(db, 'Employees', EmployeeSchema);
@@ -111,7 +121,6 @@ var Employee = function (models) {
         var ids = req.query.data;
         var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
 
-
         Employee.find({_id: {$in: ids}}, {
             'name'            : 1,
             'jobPosition.name': 1,
@@ -126,88 +135,118 @@ var Employee = function (models) {
 
     };
 
-    this.exportToCsv = function (req, res, next) {
+    this.exportToCsvFullData = function (req, res, next) {
         var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
         var body = req.body;
         var itemIdsToDisplay = body["items[]"];
         var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "Employees_" + fileUnic + ".csv";
 
         Employee.find(query)
-            /*.populate({path: 'relatedUser'})
+            .populate({path: 'relatedUser'})
             .populate({path: 'department._id'})
             .populate({path: 'jobPosition._id'})
-            //.populate({path: 'manager._id'})
-            //.populate({path: 'coach'})
+            .populate({path: 'manager._id'})
+            .populate({path: 'coach'})
             .populate({path: 'workflow'})
             .populate({path: 'groups.owner'})
             .populate({path: 'groups.users'})
             .populate({path: 'groups.group'})
             .populate({path: 'createdBy.user'})
-            .populate({path: 'editedBy.user'})*/
+            .populate({path: 'editedBy.user'})
             .exec(function (err, result) {
-
                 if (err) {
                     next(err);
                     return;
                 }
-
-                console.log(result);
-
-                var map = [
-                    {map:"First Name",
-                    property:"name.first"},
-                    {map:"Last Name",
-                    property:"name.last"},
-                    {map:"Photo",
-                    property:"imageSrc"}
-                ];
-
-
-                unfolder.convertToLinearObjects(result, map, function (err, result) {
+                unfolder.convertToLinearObjects(result, exportFullMap.Employees.map, function (err, result) {
+                    var writableStream;
 
                     if (err) {
                         next(err);
                     }
-                    console.log(result);
-                    res.status(200).send(result);
+                    writableStream = fs.createWriteStream(nameOfFile);
+                    writableStream.on('finish', function () {
+                        res.sendfile(nameOfFile, function (err) {
+                            if (err) {
+                                return next(err);
+                            }
+
+                        });
+                    });
+                    csv
+                        .write(result, {headers: getHeaders(exportFullMap.Employees.map)})
+                        .pipe(writableStream);
                 });
 
             });
 
     };
 
-
-    this.exportToXlsx = function (req, res, next) {
+    this.exportToXlsxFullData = function (req, res, next) {
+        var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
         var body = req.body;
-        var map = exportMap.Employees;
-        var propertiesToDisplay = body.properties;
         var itemIdsToDisplay = body["items[]"];
-        var type = req.query.type;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "Employees_" + fileUnic + ".xlsx";
+        var headersArray = getHeaders(exportFullMap.Employees.map);
 
-        Model.find({'_id': {$in: itemIdsToDisplay}})
-            .populate({path: "relatedUser"})
-            .populate({path: "visibility"})
-            .populate({path: "department._id"})
-            .populate({path: "jobPosition._id"})
-            .populate({path: "manager._id"})
-            .populate({path: "coach"})
-            .populate({path: "workflow"})
-            .populate({path: "groups.owner"})
-            .populate({path: "groups.users"})
-            .populate({path: "groups.group"})
-            .populate({path: "createdBy.user"})
-            .populate({path: "editedBy.user"})
+        Employee.find(query)
+            .populate({path: 'relatedUser'})
+            .populate({path: 'department._id'})
+            .populate({path: 'jobPosition._id'})
+            .populate({path: 'manager._id'})
+            .populate({path: 'coach'})
+            .populate({path: 'workflow'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
             .exec(function (err, result) {
-
                 if (err) {
                     next(err);
+                    return;
                 }
+                unfolder.convertToLinearObjects(result, exportFullMap.Employees.map, function (err, result) {
 
-                console.log(result);
+                    if (err) {
+                        next(err);
+                    }
+                    arrayToXlsx.writeFile(nameOfFile, result, {
+                        sheetName : "data",
+                        headers   : headersArray,
+                        attributes: headersArray
+                    });
+                    res.sendfile(nameOfFile, function (err) {
+
+                        if (err) {
+                            return next(err);
+                        }
+                        /* fs.unlink(nameOfFile, function (err) {
+                         if (err) {
+                         console.log(err)
+                         } else {
+                         console.log('done');
+                         }
+                         });*/
+                    });
+
+                });
 
             });
 
     };
+
+    function getHeaders(maps) {
+        var headers = [];
+        for (var i = 0; i < maps.length; i++) {
+            headers.push(maps[i].map);
+        }
+        return headers;
+    }
 
 };
 /**

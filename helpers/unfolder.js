@@ -53,9 +53,14 @@ var createMap = function (element) {
 var mapObject = function (map, element) {
     var mappedObject = {};
     var propertyMap;
+    var val;
     for (var i = map.length - 1; i >= 0; i--) {
         propertyMap = map[i];
-        mappedObject[propertyMap.map] = getValue(propertyMap.property, element);
+        val = getValue(propertyMap.property, element);
+        if (!val) {
+            val = "";
+        }
+        mappedObject[propertyMap.map] = val;
     }
     return mappedObject;
 };
