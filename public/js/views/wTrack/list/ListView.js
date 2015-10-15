@@ -640,6 +640,14 @@ define([
                         $('#check_all').prop('checked', false);
                     }
                 }
+
+                if (this.getExportButton()) {
+                    if (checkLength) {
+                        this.exportButton$.show();
+                    } else {
+                        this.exportButton$.hide();
+                    }
+                }
             },
 
             saveItem: function () {
@@ -746,6 +754,14 @@ define([
                             $("#top-bar-deleteBtn").hide();
                             self.genInvoiceEl.hide();
                             $('#check_all').prop('checked', false);
+                        }
+                    }
+
+                    if (self.getExportButton()) {
+                        if (checkLength) {
+                            self.exportButton$.show();
+                        } else {
+                            self.exportButton$.hide();
                         }
                     }
 

@@ -71,7 +71,7 @@ define([
                     itemsNumber: this.collection.namberToShow
                 }).render());
 
-                this.renderCheckboxes();
+                this.renderCheckboxes(this);
                 this.renderPagination(currentEl, this);
                 this.renderAlphabeticalFilter(this);
                 this.renderFilter(self);

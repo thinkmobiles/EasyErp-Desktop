@@ -36,7 +36,7 @@ define([
             this.$el = $(formString).dialog({
                 closeOnEscape: false,
                 dialogClass  : "edit-dialog",
-                width        : 1000,
+                width        : 480,
                 parentView   : this,
                 buttons      : {
                     export: {
