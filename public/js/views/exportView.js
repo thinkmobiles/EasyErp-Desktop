@@ -53,6 +53,8 @@ define([
                                     fileName: self.fileName
                                 }
                             );
+
+                            self.hideDialog
                           //  alert(url);
                         }
                     },
@@ -81,7 +83,8 @@ define([
                     window.location = resp.url;
                 },
                 error      : function (err) {
-                    alert(err);
+                    //TODO remove on production. It is for development only.
+                    alert(JSON.stringify(err));
                 }
             });
         }
