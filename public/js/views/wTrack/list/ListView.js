@@ -37,9 +37,13 @@ define([
             genInvoiceEl            : null,
             copyEl                  : null,
             changedModels           : {},
-            exportToCsvUrl          : '/wTrack/exportToCsv',
-            exportToXlsxUrl         : '/wTrack/exportToXlsx',
-            options                 : {fileName: 'wTrack'},
+            exportOptions           : {
+                fileName               : 'wTrack',
+                exportToXlsxUrl        : '/wTrack/exportToXlsx',
+                exportToCsvUrl         : '/wTrack/exportToCsv',
+                exportToXlsxFullDataUrl: '/wTrack/exportToXlsxFullData',
+                exportToCsvFullDataUrl : '/wTrack/exportToCsvFullData'
+            },
 
             initialize: function (options) {
                 this.startTime = options.startTime;
