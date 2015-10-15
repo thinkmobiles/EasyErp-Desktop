@@ -12,5 +12,8 @@ module.exports = function (models) {
     router.get('/getForWtrack', handler.getForWtrack);
     router.get('/getFilterValues', handler.getFilterValues);
 
+    router.post('/exportToXlsxFullData',handler.exportToXlsxFullData);
+    router.post('/exportToCsvFullData',handler.exportToCsvFullData);
+
     return router;
 };

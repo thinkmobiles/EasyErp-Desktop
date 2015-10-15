@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+
 var wTrack = function (event, models) {
     var access = require("../Modules/additions/access.js")(models);
     var _ = require('../node_modules/underscore');
@@ -16,6 +17,12 @@ var wTrack = function (event, models) {
     var async = require('async');
     var mapObject = require('../helpers/bodyMaper');
     var moment = require('../public/js/libs/moment/moment');
+
+    var exportFullMap = require('../helpers/exporter/exportMapper');
+    var unfolder = require('../helpers/unfolder');
+    var arrayToXlsx = require('../helpers/exporter/arrayToXlsx');
+    var csv = require('fast-csv');
+    var fs = require('fs');
 
     var exportHandlingHelper = require('../helpers/exporter/exportHandlingHelper');
     var exportMap = require('../helpers/csvMap').wTrack.aliases;
@@ -1525,6 +1532,107 @@ var wTrack = function (event, models) {
             });
         });
     };
+
+    this.exportToCsvFullData = function (req, res, next) {
+        var WTrack = models.get(req.session.lastDb, 'wTrack', wTrackSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body.items;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "wTrack_" + fileUnic + ".csv";
+
+        WTrack.find(query)
+            .populate({path: 'project._id'})
+            .populate({path: 'department._id'})
+            .populate({path: 'projectmanager._id'})
+            .populate({path: 'customer._id'})
+            .populate({path: 'invoice'})
+            .populate({path: 'employees'})
+            .populate({path: 'workflow._id'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
+            .exec(function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                console.log(result);
+                unfolder.convertToLinearObjects(result, exportFullMap.WTrack.map, function (err, result) {
+                    var writableStream;
+
+                    if (err) {
+                        next(err);
+                    }
+                    writableStream = fs.createWriteStream(nameOfFile);
+                    writableStream.on('finish', function () {
+                        res.status(200).send({url: '/download?path=' + nameOfFile});
+                    });
+                    csv
+                        .write(result, {headers: getHeaders(exportFullMap.WTrack.map)})
+                        .pipe(writableStream);
+                });
+
+            });
+
+    };
+
+    this.exportToXlsxFullData = function (req, res, next) {
+        var WTrack = models.get(req.session.lastDb, 'wTrack', wTrackSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body.items;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "wTrack_" + fileUnic + ".xlsx";
+        var headersArray = getHeaders(exportFullMap.WTrack.map);
+
+        WTrack.find(query)
+            .populate({path: 'project._id'})
+            .populate({path: 'department._id'})
+            .populate({path: 'projectmanager._id'})
+            .populate({path: 'customer._id'})
+            .populate({path: 'invoice'})
+            .populate({path: 'employees'})
+            .populate({path: 'workflow._id'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
+            .exec(function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                console.log(result);
+                unfolder.convertToLinearObjects(result, exportFullMap.WTrack.map, function (err, result) {
+                    if (err) {
+                        next(err);
+                    }
+
+                    arrayToXlsx.writeFile(nameOfFile, result, {
+                        sheetName : "data",
+                        headers   : headersArray,
+                        attributes: headersArray
+                    });
+                    res.status(200).send({url: '/download?path=' + nameOfFile});
+
+                });
+
+            });
+
+
+    }
+
+    function getHeaders(maps) {
+        var headers = [];
+        for (var i = 0; i < maps.length; i++) {
+            headers.push(maps[i].map);
+        }
+        return headers;
+    }
 
 };
 

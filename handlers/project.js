@@ -315,6 +315,98 @@ var Project = function (models) {
             res.status(200).send(data);
         })
     };
+
+
+    this.exportToCsvFullData = function (req, res, next) {
+        var Project = models.get(req.session.lastDb, 'Project', ProjectSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body.items;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "Projects_" + fileUnic + ".csv";
+
+        Project.find(query)
+            .populate({path: 'task'})
+            .populate({path: 'customer._id'})
+            .populate({path: 'task'})
+            .populate({path: 'workflow_id'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
+            .exec(function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                unfolder.convertToLinearObjects(result, exportFullMap.Project.map, function (err, result) {
+                    var writableStream;
+
+                    if (err) {
+                        next(err);
+                    }
+                    writableStream = fs.createWriteStream(nameOfFile);
+                    writableStream.on('finish', function () {
+                        res.status(200).send({url: '/download?path=' + nameOfFile});
+                    });
+                    csv
+                        .write(result, {headers: getHeaders(exportFullMap.Project.map)})
+                        .pipe(writableStream);
+                });
+
+            });
+
+    };
+
+    this.exportToXlsxFullData = function (req, res, next) {
+        var Project = models.get(req.session.lastDb, 'Project', EmployeeSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body.items;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "Project_" + fileUnic + ".xlsx";
+        var headersArray = getHeaders(exportFullMap.Project.map);
+
+        Project.find(query)
+            .populate({path: 'task'})
+            .populate({path: 'customer._id'})
+            .populate({path: 'task'})
+            .populate({path: 'workflow_id'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
+            .exec(function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                unfolder.convertToLinearObjects(result, exportFullMap.Project.map, function (err, result) {
+
+                    if (err) {
+                        next(err);
+                    }
+                    arrayToXlsx.writeFile(nameOfFile, result, {
+                        sheetName : "data",
+                        headers   : headersArray,
+                        attributes: headersArray
+                    });
+                    res.status(200).send({url: '/download?path=' + nameOfFile});
+
+                });
+
+            });
+    };
+
+    function getHeaders(maps) {
+        var headers = [];
+        for (var i = 0; i < maps.length; i++) {
+            headers.push(maps[i].map);
+        }
+        return headers;
+    }
 };
 
 module.exports = Project;

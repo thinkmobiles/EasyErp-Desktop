@@ -14,6 +14,12 @@ var Customers = function (models) {
     var exportHandlingHelper = require('../helpers/exporter/exportHandlingHelper');
     var exportMap = require('../helpers/csvMap').Customers.aliases;
 
+    var exportFullMap = require('../helpers/exporter/exportMapper');
+    var unfolder = require('../helpers/unfolder');
+    var arrayToXlsx = require('../helpers/exporter/arrayToXlsx');
+    var csv = require('fast-csv');
+    var fs = require('fs');
+
     exportHandlingHelper.addExportFunctionsToHandler(this, function (req) {
         return models.get(req.session.lastDb, 'Customer', CustomerSchema)
     }, exportMap);
@@ -271,6 +277,104 @@ var Customers = function (models) {
             }
         });
     };
+
+    this.exportToCsvFullData = function (req, res, next) {
+        var Customer = models.get(req.session.lastDb, 'Customers', CustomerSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body.items;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "Customers_" + fileUnic + ".csv";
+
+        Customer.find(query)
+            .populate({path: 'company'})
+            .populate({path: 'department'})
+            .populate({path: 'salesPurchases.salesPerson'})
+            .populate({path: 'salesPurchases.salesTeam'})
+            .populate({path: 'salesPurchases.implementedBy'})
+            .populate({path: 'relatedUser'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
+            .populate({path: 'companyInfo'})
+            .exec(function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                unfolder.convertToLinearObjects(result, exportFullMap.Customers.map, function (err, result) {
+                    var writableStream;
+
+                    if (err) {
+                        next(err);
+                    }
+                    writableStream = fs.createWriteStream(nameOfFile);
+                    writableStream.on('finish', function () {
+                        res.status(200).send({url: '/download?path=' + nameOfFile});
+                    });
+                    csv
+                        .write(result, {headers: getHeaders(exportFullMap.Customers.map)})
+                        .pipe(writableStream);
+                });
+
+            });
+
+    };
+
+    this.exportToXlsxFullData = function (req, res, next) {
+        var Customer = models.get(req.session.lastDb, 'Customers', CustomerSchema);
+        var body = req.body;
+        var itemIdsToDisplay = body.items;
+        var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
+        var fileUnic = new Date().toISOString();
+        var nameOfFile = "Customers" + fileUnic + ".xlsx";
+        var headersArray = getHeaders(exportFullMap.Customers.map);
+
+        Customer.find(query)
+            .populate({path: 'company'})
+            .populate({path: 'department'})
+            .populate({path: 'salesPurchases.salesPerson'})
+            .populate({path: 'salesPurchases.salesTeam'})
+            .populate({path: 'salesPurchases.implementedBy'})
+            .populate({path: 'relatedUser'})
+            .populate({path: 'groups.owner'})
+            .populate({path: 'groups.users'})
+            .populate({path: 'groups.group'})
+            .populate({path: 'createdBy.user'})
+            .populate({path: 'editedBy.user'})
+            .populate({path: 'companyInfo'})
+            .exec(function (err, result) {
+                if (err) {
+                    next(err);
+                    return;
+                }
+                unfolder.convertToLinearObjects(result, exportFullMap.Customers.map, function (err, result) {
+
+                    if (err) {
+                        next(err);
+                    }
+                    arrayToXlsx.writeFile(nameOfFile, result, {
+                        sheetName : "data",
+                        headers   : headersArray,
+                        attributes: headersArray
+                    });
+                    res.status(200).send({url: '/download?path=' + nameOfFile});
+
+                });
+
+            });
+
+    };
+
+    function getHeaders(maps) {
+        var headers = [];
+        for (var i = 0; i < maps.length; i++) {
+            headers.push(maps[i].map);
+        }
+        return headers;
+    }
 
 };
 

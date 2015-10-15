@@ -18,7 +18,9 @@ module.exports = function (event, models) {
     router.delete('/:id', handler.remove);
     router.patch('/', handler.putchBulk);
     router.patch('/:id', handler.putchModel);
-   /* router.put('/:id', handler.updateModel);*/
+    router.post('/exportToXlsxFullData',handler.exportToXlsxFullData);
+    router.post('/exportToCsvFullData',handler.exportToCsvFullData);
+    /* router.put('/:id', handler.updateModel);*/
 
     return router;
 };
