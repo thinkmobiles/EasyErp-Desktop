@@ -27,6 +27,13 @@ define([
                 "click"                    : "hideItemsNumber",
                 "click .letter:not(.empty)": "alpabeticalRender"
             },
+            exportOptions           : {
+                fileName               : 'Employees',
+                exportToXlsxUrl        : '/employee/exportToXlsx',
+                exportToCsvUrl         : '/employee/exportToCsv',
+                exportToXlsxFullDataUrl: '/employee/exportToXlsxFullData',
+                exportToCsvFullDataUrl : '/employee/exportToCsvFullData'
+            },
 
             initialize: function (options) {
                 this.startTime = options.startTime;

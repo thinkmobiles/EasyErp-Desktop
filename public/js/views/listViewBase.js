@@ -1,13 +1,15 @@
 define([
         'text!templates/Pagination/PaginationTemplate.html',
         'text!templates/Alpabet/AphabeticTemplate.html',
+        'views/exportView',
         'common',
         'dataService',
     ],
 
-    function (paginationTemplate, aphabeticTemplate, common, dataService) {
+    function (paginationTemplate, aphabeticTemplate, exportView, common, dataService) {
         var ListViewBase = Backbone.View.extend({
             el                : '#content-holder',
+            exportView        : exportView,
             defaultItemsNumber: null,
             listLength        : null,
             filter            : null,
@@ -33,6 +35,7 @@ define([
             //<editor-fold desc="Logic">
 
             fetchSortCollection: function (sortObject) {
+
                 this.sort = sortObject;
                 this.collection = new this.contentCollection({
                     viewType        : 'list',
@@ -153,6 +156,33 @@ define([
                         checkAll$.prop('checked', false);
                     }
                 }
+
+                if (this.getExportButton()) {
+                    if (checkLength) {
+                        this.exportButton$.show();
+                    } else {
+                        this.exportButton$.hide();
+                    }
+                }
+            },
+
+            getExportButton: function () {
+                if (this.exportButton$) {
+                    return this.exportButton$;
+                }
+
+                if (typeof this.hasExport === "undefined") {
+                    this.exportButton$ = $('#top-bar-exportBtn');
+                    if (this.exportButton$) {
+                        this.hasExport = true;
+                        this.exportButton$.click({context:this},this.showExportDialog);
+                    }
+                    else {
+                        this.hasExport = false;
+                    }
+                }
+
+                return this.hasExport ? this.exportButton$ : null;
             },
 
             deleteItems: function () {
@@ -582,7 +612,18 @@ define([
 
             //<editor-fold desc="Export">
 
+            showExportDialog: function (e) {
+                e.preventDefault();
+                var self= e.data.context;
+                var options = self.exportOptions;
+
+                options.selectedIds = self.getSelectedIdsArray(self.$el);
+                return new self.exportView(options);
+
+            },
+
             exportToCsv: function () {
+
                 var url = this.exportToCsvUrl
                     ? this.exportToCsvUrl
                     : (this.collection
@@ -617,18 +658,18 @@ define([
 
                 var body = this.options;
 
-                body.items=this.getSelectedIdsArray(this.$el);
+                body.items = this.getSelectedIdsArray(this.$el);
                 body = JSON.stringify(body);
 
                 $.ajax({
-                    url    : url,
-                    type   : "POST",
-                    data   : body,
-                    contentType:'application/json',
-                    success: function (resp) {
-                        window.location=resp.url;
+                    url        : url,
+                    type       : "POST",
+                    data       : body,
+                    contentType: 'application/json',
+                    success    : function (resp) {
+                        window.location = resp.url;
                     },
-                    error:function(err){
+                    error      : function (err) {
                         alert(err);
                     }
                 });

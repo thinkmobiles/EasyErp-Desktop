@@ -129,7 +129,7 @@ var Employee = function (models) {
      this.exportToCsv = function (req, res, next) {
         var Employee = models.get(req.session.lastDb, 'Employees', EmployeeSchema);
         var body = req.body;
-        var itemIdsToDisplay = body["items[]"];
+        var itemIdsToDisplay = body["items"];
         var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
 
         Employee.find(query)
