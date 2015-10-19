@@ -145,23 +145,22 @@ var Employee = function (models) {
         var nameOfFile = "Employees_" + fileUnic + ".csv";
 
         Employee.find(query)
-            .populate({path: 'relatedUser'})
-            .populate({path: 'department._id'})
-            .populate({path: 'jobPosition._id'})
-            .populate({path: 'manager._id'})
-            .populate({path: 'coach'})
-            .populate({path: 'workflow'})
-            .populate({path: 'groups.owner'})
-            .populate({path: 'groups.users'})
-            .populate({path: 'groups.group'})
-            .populate({path: 'createdBy.user'})
-            .populate({path: 'editedBy.user'})
+            .populate('relatedUser')
+            .populate('department._id')
+            .populate('jobPosition._id')
+            .populate('manager._id')
+            .populate('coach')
+            .populate('workflow')
+            .populate('groups.owner')
+            .populate('groups.users')
+            .populate('groups.group')
+            .populate('createdBy.user')
+            .populate('editedBy.user')
             .exec(function (err, result) {
                 if (err) {
-                    next(err);
-                    return;
+                    return next(err);
                 }
-                unfolder.convertToLinearObjects(result, exportFullMap.Employees.map, function (err, result) {
+                unfolder(result, exportFullMap.Employees.map, function (err, result) {
                     var writableStream;
 
                     if (err) {
@@ -190,26 +189,25 @@ var Employee = function (models) {
         var headersArray = getHeaders(exportFullMap.Employees.map);
 
         Employee.find(query)
-            .populate({path: 'relatedUser'})
-            .populate({path: 'department._id'})
-            .populate({path: 'jobPosition._id'})
-            .populate({path: 'manager._id'})
-            .populate({path: 'coach'})
-            .populate({path: 'workflow'})
-            .populate({path: 'groups.owner'})
-            .populate({path: 'groups.users'})
-            .populate({path: 'groups.group'})
-            .populate({path: 'createdBy.user'})
-            .populate({path: 'editedBy.user'})
+            .populate('relatedUser')
+            .populate('department._id')
+            .populate('jobPosition._id')
+            .populate('manager._id')
+            .populate('coach')
+            .populate('workflow')
+            .populate('groups.owner')
+            .populate('groups.users')
+            .populate('groups.group')
+            .populate('createdBy.user')
+            .populate('editedBy.user')
             .exec(function (err, result) {
                 if (err) {
-                    next(err);
-                    return;
+                    return next(err);
                 }
-                unfolder.convertToLinearObjects(result, exportFullMap.Employees.map, function (err, result) {
+                unfolder(result, exportFullMap.Employees.map, function (err, result) {
 
                     if (err) {
-                        next(err);
+                        return next(err);
                     }
                     arrayToXlsx.writeFile(nameOfFile, result, {
                         sheetName : "data",
@@ -228,8 +226,9 @@ var Employee = function (models) {
 
     function getHeaders(maps) {
         var headers = [];
+
         for (var i = 0; i < maps.length; i++) {
-            headers.push(maps[i].map);
+            headers.push(maps[i].key);
         }
         return headers;
     }

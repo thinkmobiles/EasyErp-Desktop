@@ -10,14 +10,14 @@ var createMapper = function (element, parentKey, currentKey, currentPropertyName
 
     if (!(element instanceof Object)) {
         mapValue = currentPropertyName ? currentPropertyName + '.' + currentKey : currentKey;
-        properties.push({map: mapValue, property: mapValue});
+        properties.push({key: mapValue, property: mapValue});
         return;
     }
     keys = Object.keys(element);
 
     if (keys.length === 0) {
         mapValue = currentPropertyName ? currentPropertyName + '.' + currentKey : currentKey;
-        properties.push({map: mapValue, property: mapValue});
+        properties.push({key: mapValue, property: mapValue});
         return;
     }
 
@@ -63,10 +63,10 @@ var mapObject = function (map, element) {
         propertyMap = map[i];
         val = getValue(propertyMap.property, element);
 
-        if (!val) {
+        if (val === null || val === undefined) {
             val = "";
         }
-        mappedObject[propertyMap.map] = val;
+        mappedObject[propertyMap.key] = val;
     }
 
     return mappedObject;
@@ -94,7 +94,7 @@ var convertToSimpleObjects = function (map, array) {
 /**
  *
  * @param {Object[]} elements - objects to unfold
- * * @param {Object[]} [propertyMapArray=undefined] - Array of {map:newObjectPropertyName, property:currentObjectPropertyName}
+ * * @param {Object[]} [propertyMapArray=undefined] - Array of {key:newObjectPropertyName, property:currentObjectPropertyName}
  * values that you want to have in unfolded object.
  * If null, property names will be created using first object properties, joined by dot, e.g 'property.second.third'
  *

@@ -1,5 +1,3 @@
-
-
 var mongoose = require('mongoose');
 var Products = function (models) {
     var access = require("../Modules/additions/access.js")(models);
@@ -7,9 +5,12 @@ var Products = function (models) {
     var DepartmentSchema = mongoose.Schemas['Department'];
     var objectId = mongoose.Types.ObjectId;
     var async = require('async');
+    var exportFullMap = require('../helpers/exporter/exportMapper');
     var _ = require('lodash');
     var underscore = require('../node_modules/underscore');
-
+    var unfolder = require('../helpers/unfolder');
+    var csv = require('fast-csv');
+    var arrayToXlsx = require('../helpers/exporter/arrayToXlsx');
     var fs = require("fs");
 
     var exportHandlingHelper = require('../helpers/exporter/exportHandlingHelper');
@@ -685,13 +686,23 @@ var Products = function (models) {
         var nameOfFile = "Product_" + fileUnic + ".csv";
 
         Product.find(query)
-            .populate({path: 'relatedUser'})
+            .populate('wTrack')
+            .populate('accounting.category._id:')
+            .populate('info.productType')
+            .populate('workflow')
+            .populate('groups.owner')
+            .populate('groups.users')
+            .populate('groups.group')
+            .populate('createdBy.user')
+            .populate('editedBy.user')
+
+
             .exec(function (err, result) {
                 if (err) {
                     next(err);
                     return;
                 }
-                unfolder.convertToLinearObjects(result, exportFullMap.Product.map, function (err, result) {
+                unfolder(result, exportFullMap.Product.map, function (err, result) {
                     var writableStream;
 
                     if (err) {
@@ -720,26 +731,23 @@ var Products = function (models) {
         var headersArray = getHeaders(exportFullMap.Product.map);
 
         Product.find(query)
-            .populate({path: 'relatedUser'})
-            .populate({path: 'department._id'})
-            .populate({path: 'jobPosition._id'})
-            .populate({path: 'manager._id'})
-            .populate({path: 'coach'})
-            .populate({path: 'workflow'})
-            .populate({path: 'groups.owner'})
-            .populate({path: 'groups.users'})
-            .populate({path: 'groups.group'})
-            .populate({path: 'createdBy.user'})
-            .populate({path: 'editedBy.user'})
+            .populate('wTrack')
+            .populate('accounting.category._id:')
+            .populate('info.productType')
+            .populate('workflow')
+            .populate('groups.owner')
+            .populate('groups.users')
+            .populate('groups.group')
+            .populate('createdBy.user')
+            .populate('editedBy.user')
             .exec(function (err, result) {
                 if (err) {
-                    next(err);
-                    return;
+                    return next(err);
                 }
-                unfolder.convertToLinearObjects(result, exportFullMap.Product.map, function (err, result) {
+                unfolder(result, exportFullMap.Product.map, function (err, result) {
 
                     if (err) {
-                        next(err);
+                        return next(err);
                     }
                     arrayToXlsx.writeFile(nameOfFile, result, {
                         sheetName : "data",
@@ -756,8 +764,9 @@ var Products = function (models) {
 
     function getHeaders(maps) {
         var headers = [];
+
         for (var i = 0; i < maps.length; i++) {
-            headers.push(maps[i].map);
+            headers.push(maps[i].key);
         }
         return headers;
     }

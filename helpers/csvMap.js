@@ -104,8 +104,8 @@ module.exports = (function () {
             'social.GP'          : 'Google+',
             hire                 : 'Hire',
             fire                 : 'Fire',
-            lastFire             : 'LastFire',
-            transferred          : 'Transferred'
+            lastFire             : 'LastFire'/*,
+            transferred          : 'Transferred'*/
         },
         arrayKeys   : {
             'groups.users': true,

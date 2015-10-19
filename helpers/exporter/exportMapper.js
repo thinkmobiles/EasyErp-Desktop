@@ -3,492 +3,494 @@ module.exports = (function () {
     var employees = {
         map: [
             {
-                map     : "Is Employee",
+                key     : "Is Employee",
                 property: "isEmployee"
             },
             {
-                map     : "Photo",
+                key     : "Photo",
                 property: "imageSrc"
             },
             {
-                map     : "Subject",
+                key     : "Subject",
                 property: "subject"
             },
             {
-                map     : "First Name",
+                key     : "First Name",
                 property: "name.first"
             },
             {
-                map     : "Last Name",
+                key     : "Last Name",
                 property: "name.last"
             },
             {
-                map     : "Tags",
+                key     : "Tags",
                 property: "tags"
             },
             {
-                map     : "Work Address Street",
+                key     : "Work Address Street",
                 property: "workAddress.street"
             },
             {
-                map     : "Work Address City",
+                key     : "Work Address City",
                 property: "workAddress.city"
             },
             {
-                map     : "Work Address Zip",
+                key     : "Work Address Zip",
                 property: "workAddress.zip"
             },
             {
-                map     : "Work Address Country",
+                key     : "Work Address Country",
                 property: "workAddress.country"
             },
             {
-                map     : "Work Email",
+                key     : "Work Email",
                 property: "workEmail"
             },
             {
-                map     : "Personal Email",
+                key     : "Personal Email",
                 property: "personalEmail"
             },
             {
-                map     : "Work Phone Mobile",
+                key     : "Work Phone Mobile",
                 property: "workPhones.mobile"
             },
             {
-                map     : "Work Phone",
+                key     : "Work Phone",
                 property: "workPhones.phone"
             },
             {
-                map     : "Skype",
+                key     : "Skype",
                 property: "skype"
             },
             {
-                map     : "Office Location",
+                key     : "Office Location",
                 property: "officeLocation"
             },
             {
-                map     : "Related User",
+                key     : "Related User",
                 property: "relatedUser"
             },
             {
-                map     : "Department Name",
+                key     : "Department Name",
                 property: "department.name"
             },
             {
-                map     : "Job Position Name",
+                key     : "Job Position Name",
                 property: "jobPosition.name"
             },
             {
-                map     : "Manager Name",
+                key     : "Manager Name",
                 property: "manager.name"
             },
             {
-                map     : "Related",
+                key     : "Related",
                 property: "relatedUser"
             },
             {
-                map     : "Related",
+                key     : "Related",
                 property: "relatedUser"
             },
             {
-                map     : "Related",
+                key     : "Related",
                 property: "relatedUser"
             },
             {
-                map     : "Related",
+                key     : "Related",
                 property: "relatedUser"
             },
             {
-                map     : "Related",
+                key     : "Related",
                 property: "relatedUser"
             },
             {
-                map     : "Related",
+                key     : "Related",
                 property: "relatedUser"
             },
             {
-                map     : "Related",
+                key     : "Related",
                 property: "relatedUser"
             },
             {
-                map     : "Coach First Name",
+                key     : "Coach First Name",
                 property: "coach.name.first"
             },
             {
-                map     : "Coach Last Name",
+                key     : "Coach Last Name",
                 property: "coach.name.last"
             },
             {
-                map     : "Nationality",
+                key     : "Nationality",
                 property: "nationality"
             },
             {
-                map     : "Ident No",
+                key     : "Ident No",
                 property: "identNo"
             },
             {
-                map     : "Passport No",
+                key     : "Passport No",
                 property: "passportNo"
             },
             {
-                map     : "Bank Account No",
+                key     : "Bank Account No",
                 property: "bankAccountNo"
             },
             {
-                map     : "Other Id",
+                key     : "Other Id",
                 property: "otherId"
             },
             {
-                map     : "Home Address Street",
+                key     : "Home Address Street",
                 property: "homeAddress.street"
             },
             {
-                map     : "Home Address City",
+                key     : "Home Address City",
                 property: "homeAddress.city"
             },
             {
-                map     : "Home Address State",
+                key     : "Home Address State",
                 property: "homeAddress.state"
             },
             {
-                map     : "Home Address Zip",
+                key     : "Home Address Zip",
                 property: "homeAddress.zip"
             },
             {
-                map     : "Home Address Country",
+                key     : "Home Address Country",
                 property: "homeAddress.country"
             },
             {
-                map     : "Date Birth",
+                key     : "Date Birth",
                 property: "dateBirth"
             },
             {
-                map     : "Age",
+                key     : "Age",
                 property: "age"
             },
             {
-                map     : "Days For Birth",
+                key     : "Days For Birth",
                 property: "daysForBirth"
             },
             {
-                map     : "Next Action",
+                key     : "Next Action",
                 property: "nextAction"
             },
             {
-                map     : "Source",
+                key     : "Source",
                 property: "source"
             },
             {
-                map     : "Referred By",
+                key     : "Referred By",
                 property: "referredBy"
             },
             {
-                map     : "Active",
+                key     : "Active",
                 property: "active"
             },
             {
-                map     : "Workflow Name",
+                key     : "Workflow Name",
                 property: "workflow.name"
             },
             {
-                map     : "Who Can RW",
+                key     : "Who Can RW",
                 property: "whoCanRW"
             },
             {
-                map     : "Other Info",
+                key     : "Other Info",
                 property: "otherInfo"
             },
             {
-                map     : "Expected Salary",
+                key     : "Expected Salary",
                 property: "expectedSalary"
             },
             {
-                map     : "Proposed Salary",
+                key     : "Proposed Salary",
                 property: "proposedSalary"
             },
             {
-                map     : "Color",
+                key     : "Color",
                 property: "color"
             },
             {
-                map     : "Creation Date",
+                key     : "Creation Date",
                 property: "creationDate"
             },
             {
-                map     : "Created By Date",
+                key     : "Created By Date",
                 property: "createdBy.date"
             },
             {
-                map     : "Created By User",
+                key     : "Created By User",
                 property: "createdBy.user.login"
             },
             {
-                map     : "Edited By Date",
+                key     : "Edited By Date",
                 property: "editedBy.date"
             },
             {
-                map     : "Edited By User",
+                key     : "Edited By User",
                 property: "editedBy.user.login"
             },
             {
-                map     : "Attachments",
+                key     : "Attachments",
                 property: "attachments"
             },
             {
-                map     : "Contract End Reason",
+                key     : "Contract End Reason",
                 property: "contractEnd.reason"
             },
             {
-                map     : "Contract End Date",
+                key     : "Contract End Date",
                 property: "contractEnd.date"
             },
             {
-                map     : "Marital",
+                key     : "Marital",
                 property: "marital"
             },
             {
-                map     : "Gender",
+                key     : "Gender",
                 property: "gender"
             },
             {
-                map     : "JobType",
+                key     : "JobType",
                 property: "jobType"
             },
             {
-                map     : "Sequence",
+                key     : "Sequence",
                 property: "sequence"
             },
             {
-                map     : "Is Lead",
+                key     : "Is Lead",
                 property: "isLead"
             },
             {
-                map     : "Facebook",
+                key     : "Facebook",
                 property: "social.FB"
             },
             {
-                map     : "Linkedin",
+                key     : "Linkedin",
                 property: "social.LI"
             },
             {
-                map     : "Google+",
+                key     : "Google+",
                 property: "social.GP"
             },
             {
-                map     : "Hire",
+                key     : "Hire",
                 property: "hire"
             },
             {
-                map     : "Fire",
+                key     : "Fire",
                 property: "fire"
             },
             {
-                map     : "LastFire",
+                key     : "LastFire",
                 property: "lastFire"
-            },
-            {
-                map     : "Transferred",
-                property: "transferred"
             }
+            // TODO FIELD "Transferred" HAVE TYPE [JSON]
+            /*,
+             {
+             key     : "Transferred",
+             property: "transferred"
+             }*/
         ]
     };
 
     var weTrack = {
         map: [
             {
-                map     : "Mon",
+                key     : "Mon",
                 property: "1"
             },
             {
-                map     : "Tue",
+                key     : "Tue",
                 property: "2"
             },
             {
-                map     : "Wed",
+                key     : "Wed",
                 property: "3"
             },
             {
-                map     : "Thu",
+                key     : "Thu",
                 property: "4"
             },
             {
-                map     : "Fri",
+                key     : "Fri",
                 property: "5"
             },
             {
-                map     : "Sat",
+                key     : "Sat",
                 property: "6"
             },
             {
-                map     : "Sun",
+                key     : "Sun",
                 property: "7"
             },
             {
-                map     : "Project Name",
+                key     : "Project Name",
                 property: "project.projectName"
             },
             {
-                map     : "Project Short Desc",
+                key     : "Project Short Desc",
                 property: "Project.projectShortDesc"
             },
             {
-                map     : "Project Manager",
+                key     : "Project Manager",
                 property: "Project.projectmanager"
             },
             {
-                map     : "Project Start Date",
+                key     : "Project Start Date",
                 property: "Project.StartDate"
             },
             {
-                map     : "Project End Date",
+                key     : "Project End Date",
                 property: "Project.EndDate"
             },
             {
-                map     : "Project Target End Date",
+                key     : "Project Target End Date",
                 property: "Project.Target End Date"
             },
             {
-                map     : "Project Estimated",
+                key     : "Project Estimated",
                 property: "Project.estimated"
             },
             {
-                map     : "Project Logged",
+                key     : "Project Logged",
                 property: "Project.logged"
             },
             {
-                map     : "Project Remaining",
+                key     : "Project Remaining",
                 property: "Project.remaining"
             },
             {
-                map     : "Project Progress",
+                key     : "Project Progress",
                 property: "Project.progress"
             },
             {
-                map     : "Project Health",
+                key     : "Project Health",
                 property: "Project.health"
             },
             {
-                map     : "Project Type",
+                key     : "Project Type",
                 property: "Project.projecttype"
             },
             {
-                map     : "Project Budget Team",
+                key     : "Project Budget Team",
                 property: "Project.budget.projectTeam"
             },
             {
-                map     : "Project Budget Bonus",
+                key     : "Project Budget Bonus",
                 property: "Project.budget.bonus"
             },
             {
-                map     : "Project Budget",
+                key     : "Project Budget",
                 property: "Project.budget.budget"
             },
             {
-                map     : "Project Budget Values",
+                key     : "Project Budget Values",
                 property: "Project.budget.projectValues"
             },
             {
-                map     : "Project Budget Total",
+                key     : "Project Budget Total",
                 property: "Project.budget.budgetTotal"
             },
             {
-                map     : "Date By Week",
+                key     : "Date By Week",
                 property: "dateByWeek"
             },
             {
-                map     : "Date By Month",
+                key     : "Date By Month",
                 property: "dateByMonth"
             },
             {
-                map     : "Project Manager Name",
+                key     : "Project Manager Name",
                 property: "project.projectmanager.name"
             },
             {
-                map     : "Workflow Name",
+                key     : "Workflow Name",
                 property: "project.workflow.name"
             },
             {
-                map     : "Workflow Status",
+                key     : "Workflow Status",
                 property: "project.workflow.status"
             },
             {
-                map     : "Customer Name",
+                key     : "Customer Name",
                 property: "project.customer.Name"
             },
             {
-                map     : "Employees Name",
+                key     : "Employees Name",
                 property: "employee.name"
             },
             {
-                map     : "Department Name",
+                key     : "Department Name",
                 property: "department.departmentName"
             },
             {
-                map     : "Year",
+                key     : "Year",
                 property: "year"
             },
             {
-                map     : "Month",
+                key     : "Month",
                 property: "month"
             },
             {
-                map     : "Week",
+                key     : "Week",
                 property: "week"
             },
             {
-                map     : "Worked",
+                key     : "Worked",
                 property: "worked"
             },
             {
-                map     : "Rate",
+                key     : "Rate",
                 property: "rate"
             },
             {
-                map     : "Revenue",
+                key     : "Revenue",
                 property: "revenue"
             },
             {
-                map     : "Cost",
+                key     : "Cost",
                 property: "cost"
             },
             {
-                map     : "Amount",
+                key     : "Amount",
                 property: "amount"
             },
             {
-                map     : "isPaid",
+                key     : "isPaid",
                 property: "isPaid"
             },
             {
-                map     : "Info Product Type",
-                property: "info.productType"
+                key     : "Info Product Type",
+                property: "info.productType.name"
             },
             {
-                map     : "Info Sale Price",
+                key     : "Info Sale Price",
                 property: "info.salePrice"
             },
             {
-                map     : "Who Can RW",
+                key     : "Who Can RW",
                 property: "whoCanRW"
             },
             {
-                map     : "Creation Date",
+                key     : "Creation Date",
                 property: "creationDate"
             },
             {
-                map     : "Created By Date",
+                key     : "Created By Date",
                 property: "createdBy.date"
             },
             {
-                map     : "Created By User",
+                key     : "Created By User",
                 property: "createdBy.user.login"
             },
             {
-                map     : "Edited By Date",
+                key     : "Edited By Date",
                 property: "editedBy.date"
             },
             {
-                map     : "Edited By User",
+                key     : "Edited By User",
                 property: "editedBy.user.login"
             }
         ]
@@ -498,203 +500,203 @@ module.exports = (function () {
 
         map: [
             {
-                map     : "Type",
+                key     : "Type",
                 property: "type"
             },
             {
-                map     : "Is Owner",
+                key     : "Is Owner",
                 property: "isOwn"
             },
             {
-                map     : "First Name",
+                key     : "First Name",
                 property: "name.first"
             },
             {
-                map     : "Last Name",
+                key     : "Last Name",
                 property: "name.last"
             },
             {
-                map     : "Date Birthday",
+                key     : "Date Birthday",
                 property: "dateBirth"
             },
             {
-                map     : "Photo",
+                key     : "Photo",
                 property: "imageSrc"
             },
             {
-                map     : "Email",
+                key     : "Email",
                 property: "email"
             },
             {
-                map     : "Company",
+                key     : "Company",
                 property: "company"
             },
             {
-                map     : "Department",
+                key     : "Department",
                 property: "department"
             },
             {
-                map     : "Timezone",
+                key     : "Timezone",
                 property: "timezone"
             },
             {
-                map     : "Address Street",
+                key     : "Address Street",
                 property: "address.street"
             },
             {
-                map     : "Address City",
+                key     : "Address City",
                 property: "address.city"
             },
             {
-                map     : "Address State",
+                key     : "Address State",
                 property: "address.state"
             },
             {
-                map     : "Address Zip",
+                key     : "Address Zip",
                 property: "address.zip"
             },
             {
-                map     : "Address Country",
+                key     : "Address Country",
                 property: "address.country"
             },
             {
-                map     : "Website",
+                key     : "Website",
                 property: "website"
             },
             {
-                map     : "Job Position",
+                key     : "Job Position",
                 property: "jobPosition"
             },
             {
-                map     : "Skype",
+                key     : "Skype",
                 property: "skype"
             },
             {
-                map     : "Phone",
+                key     : "Phone",
                 property: "phones.phone"
             },
             {
-                map     : "Mobile",
+                key     : "Mobile",
                 property: "phones.mobile"
             },
             {
-                map     : "Fax",
+                key     : "Fax",
                 property: "phones.fax"
             },
             {
-                map     : "Contacts",
+                key     : "Contacts",
                 property: "contacts"
             },
             {
-                map     : "Internal Notes",
+                key     : "Internal Notes",
                 property: "internalNotes"
             },
             {
-                map     : "Title",
+                key     : "Title",
                 property: "title"
             },
             {
-                map     : "Sales Purchases Is Customer",
+                key     : "Sales Purchases Is Customer",
                 property: "salesPurchases.isCustomer"
             },
             {
-                map     : "Sales Purchases Is Supplier",
+                key     : "Sales Purchases Is Supplier",
                 property: "salesPurchases.isSupplier"
             },
             {
-                map     : "Sales Purchases Sales Person",
+                key     : "Sales Purchases Sales Person",
                 property: "salesPurchases.salesPerson"
             },
             {
-                map     : "Sales Purchases Sales Team",
+                key     : "Sales Purchases Sales Team",
                 property: "salesPurchases.salesTeam"
             },
             {
-                map     : "Sales Purchases Implemented By",
+                key     : "Sales Purchases Implemented By",
                 property: "salesPurchases.implementedBy"
             },
             {
-                map     : "Sales Purchases Active",
+                key     : "Sales Purchases Active",
                 property: "salesPurchases.active"
             },
             {
-                map     : "Sales Purchases Reference",
+                key     : "Sales Purchases Reference",
                 property: "salesPurchases.reference"
             },
             {
-                map     : "Sales Purchases Language",
+                key     : "Sales Purchases Language",
                 property: "salesPurchases.language"
             },
             {
-                map     : "Sales Purchases Receive Messages",
+                key     : "Sales Purchases Receive Messages",
                 property: "salesPurchases.receiveMessages"
             },
             {
-                map     : "Related User",
+                key     : "Related User",
                 property: "relatedUser"
             },
             {
-                map     : "Color",
+                key     : "Color",
                 property: "color"
             },
             {
-                map     : "Facebook",
+                key     : "Facebook",
                 property: "social.FB"
             },
             {
-                map     : "Linkedin",
+                key     : "Linkedin",
                 property: "social.LI"
             },
             {
-                map     : "Who Can RW",
+                key     : "Who Can RW",
                 property: "whoCanRW"
             },
             {
-                map     : "Groups Owner",
+                key     : "Groups Owner",
                 property: "groups.owner"
             },
             {
-                map     : "Groups Users",
+                key     : "Groups Users",
                 property: "groups.users"
             },
             {
-                map     : "Groups",
+                key     : "Groups",
                 property: "groups.Group"
             },
             {
-                map     : "Notes",
+                key     : "Notes",
                 property: "notes"
             },
             {
-                map     : "Attachments",
+                key     : "Attachments",
                 property: "attachments"
             },
             {
-                map     : "History",
+                key     : "History",
                 property: "history"
             },
             {
-                map     : "Created By Date",
+                key     : "Created By Date",
                 property: "createdBy.date"
             },
             {
-                map     : "Created By User",
+                key     : "Created By User",
                 property: "createdBy.user.login"
             },
             {
-                map     : "Edited By Date",
+                key     : "Edited By Date",
                 property: "editedBy.date"
             },
             {
-                map     : "Edited By User",
+                key     : "Edited By User",
                 property: "editedBy.user.login"
             },
             {
-                map     : "Company Size",
+                key     : "Company Size",
                 property: "companyInfo.size"
             },
             {
-                map     : "Company Industry",
+                key     : "Company Industry",
                 property: "companyInfo.industry"
             }
 
@@ -704,139 +706,333 @@ module.exports = (function () {
     var project = {
         map: [
             {
-                map     : "Project Short Desc",
+                key     : "Project Short Desc",
                 property: "projectShortDesc"
             },
             {
-                map     : "Project Name",
+                key     : "Project Name",
                 property: "projectName"
             },
             {
-                map     : "Task",
+                key     : "Task",
                 property: "task"
             },
             {
-                map     : "Customer Name",
+                key     : "Customer Name",
                 property: "customername"
             },
             {
-                map     : "Project Manager Name",
+                key     : "Project Manager Name",
                 property: "projectmanager.name"
             },
             {
-                map     : "Description",
+                key     : "Description",
                 property: "description"
             },
             {
-                map     : "Who Can RW",
+                key     : "Who Can RW",
                 property: "whoCanRW"
             },
             {
-                map     : "Groups Owner",
+                key     : "Groups Owner",
                 property: "groups.owner"
             },
             {
-                map     : "Groups Users",
+                key     : "Groups Users",
                 property: "groups.users"
             },
             {
-                map     : "Groups",
+                key     : "Groups",
                 property: "groups.Group"
             },
             {
-                map     : "Start Date",
+                key     : "Start Date",
                 property: "StartDate"
             },
             {
-                map     : "End Date",
+                key     : "End Date",
                 property: "EndDate"
             },
             {
-                map     : "Target End Date",
+                key     : "Target End Date",
                 property: "TargetEndDate"
             },
             {
-                map     : "Sequence",
+                key     : "Sequence",
                 property: "sequence"
             },
             {
-                map     : "Parent",
+                key     : "Parent",
                 property: "parent"
             },
             {
-                map     : "Workflow Name",
+                key     : "Workflow Name",
                 property: "workflow.name"
             },
             {
-                map     : "Estimated",
+                key     : "Estimated",
                 property: "estimated"
             },
             {
-                map     : "Logged",
+                key     : "Logged",
                 property: "logged"
             },
             {
-                map     : "Remaining",
+                key     : "Remaining",
                 property: "remaining"
             },
             {
-                map     : "Progress",
+                key     : "Progress",
                 property: "progress"
             },
             {
-                map     : "Created By Date",
+                key     : "Created By Date",
                 property: "createdBy.date"
             },
             {
-                map     : "Created By User",
+                key     : "Created By User",
                 property: "createdBy.user.login"
             },
             {
-                map     : "Project Type",
+                key     : "Project Type",
                 property: "Project.projecttype"
             },
             {
-                map     : "Notes",
+                key     : "Notes",
                 property: "notes"
             },
             {
-                map     : "Attachments",
+                key     : "Attachments",
                 property: "attachments"
             },
             {
-                map     : "Edited By Date",
+                key     : "Edited By Date",
                 property: "editedBy.date"
             },
             {
-                map     : "Edited By User",
+                key     : "Edited By User",
                 property: "editedBy.user.login"
             },
             {
-                map     : "Health",
+                key     : "Health",
                 property: "health"
             }
 
         ]
 
-/*
+        /*
 
-            'bonus.employeeId'   : 'Bonus Employee Id',
-            'bonus.bonusId'      : 'Bonus Id',
-            'bonus.startDate'    : 'Bonus Start Date',
-            'bonus.startWeek'    : 'Bonus Start Week',
-            'bonus.startYear'    : 'Bonus Start Year',
-            'bonus.endDate'      : 'Bonus End Date',
-            'bonus.endWeek'      : 'Bonus End Week',
-            'bonus.endYear'      : 'Bonus End Year'
-            */
+         'bonus.employeeId'   : 'Bonus Employee Id',
+         'bonus.bonusId'      : 'Bonus Id',
+         'bonus.startDate'    : 'Bonus Start Date',
+         'bonus.startWeek'    : 'Bonus Start Week',
+         'bonus.startYear'    : 'Bonus Start Year',
+         'bonus.endDate'      : 'Bonus End Date',
+         'bonus.endWeek'      : 'Bonus End Week',
+         'bonus.endYear'      : 'Bonus End Year'
+         */
 
+    };
+
+    var product = {
+        map: [
+            {
+                key     : "Name",
+                property: "name"
+            },
+            {
+                key     : "Can Be Sold",
+                property: "canBeSold"
+            },
+            {
+                key     : "Can Be Expensed",
+                property: "canBeExpensed"
+            },
+            {
+                key     : "Event Subscription",
+                property: "eventSubscription"
+            },
+            {
+                key     : "Can Be Purchased",
+                property: "canBePurchased"
+            },
+            {
+                key     : "Photo",
+                property: "imageSrc"
+            },
+            {
+                key     : "Info Product Type",
+                property: "info.productType.name"
+            },
+            {
+                key     : "Info Sale Price",
+                property: "info.salePrice"
+            },
+            {
+                key     : "Info Is Active",
+                property: "info.isActive"
+            },
+            {
+                key     : "Info Barcode",
+                property: "info.barcode"
+            },
+            {
+                key     : "Info Description",
+                property: "info.description"
+            },
+            {
+                key     : "Accounting Category Name",
+                property: "accounting.category.name"
+            },
+            {
+                key     : "Workflow Name",
+                property: "workflow.name"
+            },
+            {
+                key     : "wTrack Who Can RW",
+                property: "wTrack.whoCanRW"
+            },
+            {
+                key     : "Groups Owner",
+                property: "groups.owner"
+            },
+            {
+                key     : "Groups Users",
+                property: "groups.users"
+            },
+            {
+                key     : "Groups",
+                property: "groups.Group"
+            },
+            {
+                key     : "Creation Date",
+                property: "creationDate"
+            },
+            {
+                key     : "Created By Date",
+                property: "createdBy.date"
+            },
+            {
+                key     : "Created By User",
+                property: "createdBy.user.login"
+            },
+            {
+                key     : "Edited By Date",
+                property: "editedBy.date"
+            },
+            {
+                key     : "Edited By User",
+                property: "editedBy.user.login"
+            },
+            {
+                key     : "wTrack Date By Week",
+                property: "wTrack.dateByWeek"
+            },
+            {
+                key     : "wTrack Date By Month",
+                property: "wTrack.dateByMonth"
+            },
+            {
+                key     : "wTrack Project Manager Name",
+                property: "wTrack.project.projectmanager.name"
+            },
+            {
+                key     : "wTrack Workflow Name",
+                property: "wTrack.project.workflow.name"
+            },
+            {
+                key     : "wTrack Workflow Status",
+                property: "wTrack.project.workflow.status"
+            },
+            {
+                key     : "wTrack Customer Name",
+                property: "wTrack.project.customer.Name"
+            },
+            {
+                key     : "wTrack Employees Name",
+                property: "wTrack.employee.name"
+            },
+            {
+                key     : "wTrack Department Name",
+                property: "wTrack.department.departmentName"
+            },
+            {
+                key     : "wTrack Year",
+                property: "wTrack.year"
+            },
+            {
+                key     : "wTrack wTrack Month",
+                property: "wTrack.month"
+            },
+            {
+                key     : "wTrack Week",
+                property: "wTrack.week"
+            },
+            {
+                key     : "wTrack Worked",
+                property: "wTrack.worked"
+            },
+            {
+                key     : "wTrack Rate",
+                property: "wTrack.rate"
+            },
+            {
+                key     : "wTrack Revenue",
+                property: "wTrack.revenue"
+            },
+            {
+                key     : "wTrack Cost",
+                property: "wTrack.cost"
+            },
+            {
+                key     : "wTrack Amount",
+                property: "wTrack.mount"
+            },
+            {
+                key     : "wTrack isPaid",
+                property: "wTrack.isPaid"
+            },
+            {
+                key     : "wTrack Info Product Type",
+                property: "wTrack.info.productType.name"
+            },
+            {
+                key     : "wTrack Info Sale Price",
+                property: "wTrack.info.salePrice"
+            },
+            {
+                key     : "wTrack Who Can RW",
+                property: "wTrack.whoCanRW"
+            },
+            {
+                key     : "wTrack Creation Date",
+                property: "wTrack.creationDate"
+            },
+            {
+                key     : "wTrackCreated By Date",
+                property: "wTrack.createdBy.date"
+            },
+            {
+                key     : "wTrack Created By User",
+                property: "wTrack.createdBy.user.login"
+            },
+            {
+                key     : "wTrack Edited By Date",
+                property: "wTrack.editedBy.date"
+            },
+            {
+                key     : "wTrack Edited By User",
+                property: "wTrack.editedBy.user.login"
+            }
+        ]
     };
 
     return {
         Employees: employees,
         WTrack   : weTrack,
         Customers: customers,
-        Project  : project
+        Project  : project,
+        Product  : product
     }
 
 })();

@@ -1542,29 +1542,27 @@ var wTrack = function (event, models) {
         var nameOfFile = "wTrack_" + fileUnic + ".csv";
 
         WTrack.find(query)
-            .populate({path: 'project._id'})
-            .populate({path: 'department._id'})
-            .populate({path: 'projectmanager._id'})
-            .populate({path: 'customer._id'})
-            .populate({path: 'invoice'})
-            .populate({path: 'employees'})
-            .populate({path: 'workflow._id'})
-            .populate({path: 'groups.owner'})
-            .populate({path: 'groups.users'})
-            .populate({path: 'groups.group'})
-            .populate({path: 'createdBy.user'})
-            .populate({path: 'editedBy.user'})
+            .populate('project._id')
+            .populate('department._id')
+            .populate('projectmanager._id')
+            .populate('customer._id')
+            .populate('invoice')
+            .populate('employees')
+            .populate('workflow._id')
+            .populate('groups.owner')
+            .populate('groups.users')
+            .populate('groups.group')
+            .populate('createdBy.user')
+            .populate('editedBy.user')
             .exec(function (err, result) {
                 if (err) {
-                    next(err);
-                    return;
+                    return next(err);
                 }
-                console.log(result);
-                unfolder.convertToLinearObjects(result, exportFullMap.WTrack.map, function (err, result) {
+                unfolder(result, exportFullMap.WTrack.map, function (err, result) {
                     var writableStream;
 
                     if (err) {
-                        next(err);
+                        return next(err);
                     }
                     writableStream = fs.createWriteStream(nameOfFile);
                     writableStream.on('finish', function () {
@@ -1589,27 +1587,25 @@ var wTrack = function (event, models) {
         var headersArray = getHeaders(exportFullMap.WTrack.map);
 
         WTrack.find(query)
-            .populate({path: 'project._id'})
-            .populate({path: 'department._id'})
-            .populate({path: 'projectmanager._id'})
-            .populate({path: 'customer._id'})
-            .populate({path: 'invoice'})
-            .populate({path: 'employees'})
-            .populate({path: 'workflow._id'})
-            .populate({path: 'groups.owner'})
-            .populate({path: 'groups.users'})
-            .populate({path: 'groups.group'})
-            .populate({path: 'createdBy.user'})
-            .populate({path: 'editedBy.user'})
+            .populate('project._id')
+            .populate('department._id')
+            .populate('projectmanager._id')
+            .populate('customer._id')
+            .populate('invoice')
+            .populate('employees')
+            .populate('workflow._id')
+            .populate('groups.owner')
+            .populate('groups.users')
+            .populate('groups.group')
+            .populate('createdBy.user')
+            .populate('editedBy.user')
             .exec(function (err, result) {
                 if (err) {
-                    next(err);
-                    return;
+                    return next(err);
                 }
-                console.log(result);
-                unfolder.convertToLinearObjects(result, exportFullMap.WTrack.map, function (err, result) {
+                unfolder(result, exportFullMap.WTrack.map, function (err, result) {
                     if (err) {
-                        next(err);
+                        return next(err);
                     }
 
                     arrayToXlsx.writeFile(nameOfFile, result, {
@@ -1628,8 +1624,9 @@ var wTrack = function (event, models) {
 
     function getHeaders(maps) {
         var headers = [];
+
         for (var i = 0; i < maps.length; i++) {
-            headers.push(maps[i].map);
+            headers.push(maps[i].key);
         }
         return headers;
     }

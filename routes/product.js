@@ -1,4 +1,3 @@
-
 var express = require('express');
 var router = express.Router();
 var ProductHandler = require('../handlers/product');
@@ -13,13 +12,15 @@ module.exports = function (models) {
     router.get('/getProductsTypeForDd', handler.getProductsTypeForDd);
     router.get('/totalCollectionLength', handler.totalCollectionLength);
     router.get('/getProductsImages', handler.getProductsImages);
-    router.post('/exportToXlsx',handler.exportToXlsx);
-    router.post('/exportToCsv',handler.exportToCsv);
+    router.post('/exportToXlsx', handler.exportToXlsx);
+    router.post('/exportToCsv', handler.exportToCsv);
     router.get('/:viewType', handler.getForView);
     router.post('/', handler.create);
     /*router.post('/uploadProductFiles', multipartMiddleware, handler.uploadProductFiles);*///FixMe
     router.patch('/:_id', handler.productsUpdateOnlySelectedFields);
     router.delete('/:_id', handler.removeProduct);
+    router.post('/exportToXlsxFullData', handler.exportToXlsxFullData);
+    router.post('/exportToCsvFullData', handler.exportToCsvFullData);
 
     return router;
 };

@@ -282,33 +282,33 @@ var Customers = function (models) {
         var Customer = models.get(req.session.lastDb, 'Customers', CustomerSchema);
         var body = req.body;
         var itemIdsToDisplay = body.items;
+        var fileName = body.fileName;
         var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
         var fileUnic = new Date().toISOString();
-        var nameOfFile = "Customers_" + fileUnic + ".csv";
+        var nameOfFile = fileName + fileUnic + ".csv";
 
         Customer.find(query)
-            .populate({path: 'company'})
-            .populate({path: 'department'})
-            .populate({path: 'salesPurchases.salesPerson'})
-            .populate({path: 'salesPurchases.salesTeam'})
-            .populate({path: 'salesPurchases.implementedBy'})
-            .populate({path: 'relatedUser'})
-            .populate({path: 'groups.owner'})
-            .populate({path: 'groups.users'})
-            .populate({path: 'groups.group'})
-            .populate({path: 'createdBy.user'})
-            .populate({path: 'editedBy.user'})
-            .populate({path: 'companyInfo'})
+            .populate('company')
+            .populate('department')
+            .populate('salesPurchases.salesPerson')
+            .populate('salesPurchases.salesTeam')
+            .populate('salesPurchases.implementedBy')
+            .populate('relatedUser')
+            .populate('groups.owner')
+            .populate('groups.users')
+            .populate('groups.group')
+            .populate('createdBy.user')
+            .populate('editedBy.user')
+            .populate('companyInfo.fileName')
             .exec(function (err, result) {
                 if (err) {
-                    next(err);
-                    return;
+                    return next(err);
                 }
-                unfolder.convertToLinearObjects(result, exportFullMap.Customers.map, function (err, result) {
+                unfolder(result, exportFullMap.Customers.map, function (err, result) {
                     var writableStream;
 
                     if (err) {
-                        next(err);
+                        return next(err);
                     }
                     writableStream = fs.createWriteStream(nameOfFile);
                     writableStream.on('finish', function () {
@@ -327,33 +327,33 @@ var Customers = function (models) {
         var Customer = models.get(req.session.lastDb, 'Customers', CustomerSchema);
         var body = req.body;
         var itemIdsToDisplay = body.items;
+        var fileName = body.fileName;
         var query = itemIdsToDisplay ? {'_id': {$in: itemIdsToDisplay}} : {};
         var fileUnic = new Date().toISOString();
-        var nameOfFile = "Customers" + fileUnic + ".xlsx";
+        var nameOfFile = fileName + fileUnic + ".xlsx";
         var headersArray = getHeaders(exportFullMap.Customers.map);
 
         Customer.find(query)
-            .populate({path: 'company'})
-            .populate({path: 'department'})
-            .populate({path: 'salesPurchases.salesPerson'})
-            .populate({path: 'salesPurchases.salesTeam'})
-            .populate({path: 'salesPurchases.implementedBy'})
-            .populate({path: 'relatedUser'})
-            .populate({path: 'groups.owner'})
-            .populate({path: 'groups.users'})
-            .populate({path: 'groups.group'})
-            .populate({path: 'createdBy.user'})
-            .populate({path: 'editedBy.user'})
-            .populate({path: 'companyInfo'})
+            .populate('company')
+            .populate('department')
+            .populate('salesPurchases.salesPerson')
+            .populate('salesPurchases.salesTeam')
+            .populate('salesPurchases.implementedBy')
+            .populate('relatedUser')
+            .populate('groups.owner')
+            .populate('groups.users')
+            .populate('groups.group')
+            .populate('createdBy.user')
+            .populate('editedBy.user')
+            .populate('companyInfo.fileName')
             .exec(function (err, result) {
                 if (err) {
-                    next(err);
-                    return;
+                    return next(err);
                 }
-                unfolder.convertToLinearObjects(result, exportFullMap.Customers.map, function (err, result) {
+                unfolder(result, exportFullMap.Customers.map, function (err, result) {
 
                     if (err) {
-                        next(err);
+                        return next(err);
                     }
                     arrayToXlsx.writeFile(nameOfFile, result, {
                         sheetName : "data",
@@ -370,8 +370,9 @@ var Customers = function (models) {
 
     function getHeaders(maps) {
         var headers = [];
+
         for (var i = 0; i < maps.length; i++) {
-            headers.push(maps[i].map);
+            headers.push(maps[i].key);
         }
         return headers;
     }
