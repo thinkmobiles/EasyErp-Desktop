@@ -4,7 +4,7 @@ var createMapper = function (element, parentKey, currentKey, currentPropertyName
     var keys;
     var mapValue;
 
-    if (parentKey != null) {
+    if (parentKey !== null) {
         currentPropertyName = currentPropertyName ? currentPropertyName + '.' + parentKey : parentKey;
     }
 
@@ -23,6 +23,7 @@ var createMapper = function (element, parentKey, currentKey, currentPropertyName
 
     keys.forEach(function (key) {
         var innerElement = element[key];
+
         createMapper(innerElement, currentKey, key, currentPropertyName, properties);
     });
 };
@@ -42,11 +43,14 @@ var getValue = function (name, obj) {
 };
 
 var createMap = function (element) {
+    var properties = [];
+
     if (!(element instanceof Object)) {
         throw new TypeError();
     }
-    var properties = [];
+
     createMapper(element, null, null, null, properties);
+
     return properties;
 };
 
@@ -54,20 +58,24 @@ var mapObject = function (map, element) {
     var mappedObject = {};
     var propertyMap;
     var val;
+
     for (var i = map.length - 1; i >= 0; i--) {
         propertyMap = map[i];
         val = getValue(propertyMap.property, element);
+
         if (!val) {
             val = "";
         }
         mappedObject[propertyMap.map] = val;
     }
+
     return mappedObject;
 };
 
 var convertToSimpleObjects = function (map, array) {
     var result;
     var mappedElement;
+
     if (!(array instanceof Array)) {
         throw new TypeError();
     }
