@@ -24,7 +24,14 @@ define([
             viewType                : 'list',//needs in view.prototype.changeLocationHash
             exportToXlsxUrl         : '/Customers/exportToXlsx',
             exportToCsvUrl          : '/Customers/exportToCsv',
-            options                 : {type: 'Person', fileName: 'Persons'},
+            exportOptions           : {
+                fileName               : 'Persons',
+                type                   : 'Person',
+                exportToXlsxUrl        : '/Customers/exportToXlsx',
+                exportToCsvUrl         : '/Customers/exportToCsv',
+                exportToXlsxFullDataUrl: '/Customers/exportToXlsxFullData',
+                exportToCsvFullDataUrl : '/Customers/exportToCsvFullData'
+            },
             events                  : {
                 "click .letter:not(.empty)": "alpabeticalRender",
             },
@@ -67,7 +74,7 @@ define([
                     itemsNumber: this.collection.namberToShow
                 }).render());
 
-                this.renderCheckboxes();
+                this.renderCheckboxes(this);
                 this.renderAlphabeticalFilter(this);
                 this.renderPagination(currentEl, this);
 

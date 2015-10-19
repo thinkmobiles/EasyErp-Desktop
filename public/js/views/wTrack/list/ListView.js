@@ -37,9 +37,13 @@ define([
             genInvoiceEl            : null,
             copyEl                  : null,
             changedModels           : {},
-            exportToCsvUrl          : '/wTrack/exportToCsv',
-            exportToXlsxUrl         : '/wTrack/exportToXlsx',
-            options                 : {fileName: 'wTrack'},
+            exportOptions           : {
+                fileName               : 'wTrack',
+                exportToXlsxUrl        : '/wTrack/exportToXlsx',
+                exportToCsvUrl         : '/wTrack/exportToCsv',
+                exportToXlsxFullDataUrl: '/wTrack/exportToXlsxFullData',
+                exportToCsvFullDataUrl : '/wTrack/exportToCsvFullData'
+            },
 
             initialize: function (options) {
                 this.startTime = options.startTime;
@@ -636,6 +640,14 @@ define([
                         $('#check_all').prop('checked', false);
                     }
                 }
+
+                if (this.getExportButton()) {
+                    if (checkLength) {
+                        this.exportButton$.show();
+                    } else {
+                        this.exportButton$.hide();
+                    }
+                }
             },
 
             saveItem: function () {
@@ -742,6 +754,14 @@ define([
                             $("#top-bar-deleteBtn").hide();
                             self.genInvoiceEl.hide();
                             $('#check_all').prop('checked', false);
+                        }
+                    }
+
+                    if (self.getExportButton()) {
+                        if (checkLength) {
+                            self.exportButton$.show();
+                        } else {
+                            self.exportButton$.hide();
                         }
                     }
 

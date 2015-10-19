@@ -1,13 +1,15 @@
 define([
         'text!templates/Pagination/PaginationTemplate.html',
         'text!templates/Alpabet/AphabeticTemplate.html',
+        'views/exportView',
         'common',
         'dataService',
     ],
 
-    function (paginationTemplate, aphabeticTemplate, common, dataService) {
+    function (paginationTemplate, aphabeticTemplate, exportView, common, dataService) {
         var ListViewBase = Backbone.View.extend({
             el                : '#content-holder',
+            exportView        : exportView,
             defaultItemsNumber: null,
             listLength        : null,
             filter            : null,
@@ -153,6 +155,33 @@ define([
                         checkAll$.prop('checked', false);
                     }
                 }
+
+                if (this.getExportButton()) {
+                    if (checkLength) {
+                        this.exportButton$.show();
+                    } else {
+                        this.exportButton$.hide();
+                    }
+                }
+            },
+
+            getExportButton: function () {
+                if (this.exportButton$) {
+                    return this.exportButton$;
+                }
+
+                if (typeof this.hasExport === "undefined") {
+                    this.exportButton$ = $('#top-bar-exportBtn');
+                    if (this.exportButton$) {
+                        this.hasExport = true;
+                        this.exportButton$.click({context:this},this.showExportDialog);
+                    }
+                    else {
+                        this.hasExport = false;
+                    }
+                }
+
+                return this.hasExport ? this.exportButton$ : null;
             },
 
             deleteItems: function () {
@@ -353,6 +382,16 @@ define([
 
             //<editor-fold desc="Show">
 
+            showExportDialog: function (e) {
+                e.preventDefault();
+                var self= e.data.context;
+                var options = self.exportOptions;
+
+                options.selectedIds = self.getSelectedIdsArray(self.$el);
+                return new self.exportView(options);
+
+            },
+
             showFilteredPage: function (filter, context) {
                 var itemsNumber = $("#itemsNumber").text();
 
@@ -482,13 +521,21 @@ define([
                 this.getTotalLength(null, itemsNumber, this.filter);
             },
 
-            renderCheckboxes: function () {
+            renderCheckboxes: function (self) {
                 $('#check_all').click(function () {
                     $(':checkbox').prop('checked', this.checked);
                     if ($("input.checkbox:checked").length > 0) {
                         $("#top-bar-deleteBtn").show();
                     } else {
                         $("#top-bar-deleteBtn").hide();
+                    }
+
+                    if (self.getExportButton()) {
+                        if (this.checked) {
+                            self.exportButton$.show();
+                        } else {
+                            self.exportButton$.hide();
+                        }
                     }
                 });
             },
@@ -582,31 +629,6 @@ define([
 
             //<editor-fold desc="Export">
 
-            exportToCsv: function () {
-                var url = 'customers/exportToCsvFullData';
-                /*var url = this.exportToCsvUrl
-                    ? this.exportToCsvUrl
-                    : (this.collection
-                    ? this.collection.url + '/exportToCsvFullData'
-                    : '');*/
-                //todo change after routes refactoring
-
-                this.postAndExport(url)
-            },
-
-            exportToXlsx: function () {
-                var url = 'customers/exportToXlsxFullData';
-                /*var url = this.exportToXlsxUrl
-                    ? this.exportToXlsxUrl
-                    : (this.collection
-                    ? this.collection.url + '/exportToXlsxFullData'
-                    : '');*/
-                //todo change after routes refactoring
-
-                this.postAndExport(url)
-
-            },
-
             getSelectedIdsArray: function (context) {
                 var selected = [];
                 context.find('.checkbox:checked').each(function () {
@@ -614,27 +636,6 @@ define([
                 });
                 return selected;
             },
-
-            postAndExport: function (url) {
-
-                var body = this.options;
-
-                body.items=this.getSelectedIdsArray(this.$el);
-                body = JSON.stringify(body);
-
-                $.ajax({
-                    url    : url,
-                    type   : "POST",
-                    data   : body,
-                    contentType:'application/json',
-                    success: function (resp) {
-                        window.location=resp.url;
-                    },
-                    error:function(err){
-                        alert(err);
-                    }
-                });
-            }
 
             // </editor-fold>
 

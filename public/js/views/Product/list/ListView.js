@@ -22,9 +22,14 @@ define([
             totalCollectionLengthUrl: '/product/totalCollectionLength',
             page                    : null, //if reload page, and in url is valid page
             contentType             : 'Product',//needs in view.prototype.changeLocationHash
-            exportToXlsxUrl         : '/Product/exportToXlsx',
-            exportToCsvUrl          : '/Product/exportToCsv',
             options                 : {fileName: 'Products'},
+            exportOptions           : {
+                fileName               : 'Products',
+                exportToXlsxUrl        : '/Product/exportToXlsx',
+                exportToCsvUrl         : '/Product/exportToCsv',
+                exportToXlsxFullDataUrl: '/Product/exportToXlsxFullData',
+                exportToCsvFullDataUrl : '/Product/exportToCsvFullData'
+            },
 
             initialize: function (options) {
                 this.startTime = options.startTime;
@@ -66,7 +71,7 @@ define([
                     itemsNumber: this.collection.namberToShow
                 }).render());
 
-                this.renderCheckboxes();
+                this.renderCheckboxes(this);
                 this.renderPagination(currentEl, this);
                 this.renderAlphabeticalFilter(this);
                 this.renderFilter(self);

@@ -27,7 +27,13 @@ define([
                 "click"                    : "hideItemsNumber",
                 "click .letter:not(.empty)": "alpabeticalRender"
             },
-            options                 : {fileName: 'Employees'},
+            exportOptions           : {
+                fileName               : 'Employees',
+                exportToXlsxUrl        : '/employee/exportToXlsx',
+                exportToCsvUrl         : '/employee/exportToCsv',
+                exportToXlsxFullDataUrl: '/employee/exportToXlsxFullData',
+                exportToCsvFullDataUrl : '/employee/exportToCsvFullData'
+            },
 
             initialize: function (options) {
                 this.startTime = options.startTime;
@@ -66,7 +72,7 @@ define([
                     itemsNumber: this.collection.namberToShow
                 }).render());
 
-                this.renderCheckboxes();
+                this.renderCheckboxes(this);
                 this.renderAlphabeticalFilter(this);
                 this.renderPagination(currentEl, this);
 
