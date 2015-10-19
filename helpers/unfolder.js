@@ -88,8 +88,8 @@ var convertToSimpleObjects = function (map, array) {
         mappedElement = mapObject(map, array[i]);
         result.push(mappedElement);
     }
-    return result;
 
+    return result;
 };
 /**
  *
@@ -100,15 +100,11 @@ var convertToSimpleObjects = function (map, array) {
  *
  * @param {Function} callback - Callback that will be executed after unfolding objects.
  */
-exports.convertToLinearObjects = function (elements, propertyMapArray, callback) {
-    async.series(
-        {
-            one: function (callback) {
-                var res = convertToSimpleObjects(propertyMapArray, elements);
-                callback(null, res)
-            }
-        }, function (err, results) {
-            callback(null, results.one);
-        }
-    );
+module.exports = function (elements, propertyMapArray, callback) {
+    setTimeout(function(){
+        var res = convertToSimpleObjects(propertyMapArray, elements);
+
+        //todo Try catch and return exception in callback or change callback parameters to (result) only
+        callback(null, res);
+    },1);
 };
