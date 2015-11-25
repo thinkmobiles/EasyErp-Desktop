@@ -36,8 +36,11 @@ var Payment = function (models, event) {
     function returnModuleId(req) {
         var body = req.body;
         var moduleId;
+        var type = req.params.byType;
 
-        moduleId = !!body.forSales ? 61 : !!body.salary ? 79 : 60;
+       // moduleId = !!body.forSales ? 61 : !!body.salary ? 79 : 60;
+
+        moduleId = (type === 'customer') ? 61 : (type === 'supplier') ? 60 : 79;
 
         return moduleId;
     }
@@ -51,9 +54,9 @@ var Payment = function (models, event) {
         if (options.isWtrack) {
             if (moduleId === 61) {
                 Payment = models.get(req.session.lastDb, 'Payment', PaymentSchema);
-            } else if (options.salary) {
+            } else if (moduleId === 79) {
                 Payment = models.get(req.session.lastDb, 'salaryPayment', salaryPaymentSchema);
-            } else {
+            } else if (moduleId === 60) {
                 Payment = models.get(req.session.lastDb, 'wTrackPayOut', wTrackPayOutSchema);
             }
         } else {
@@ -369,11 +372,15 @@ var Payment = function (models, event) {
 
     function payrollExpensUpdater(db, _payment, mulParram, cb) {
         var Payroll = models.get(db, 'PayRoll', payrollSchema);
+        var id = _payment.paymentRef ? _payment.paymentRef : _payment.product;
+        var paid = _payment.paidAmount ? _payment.paidAmount : _payment.paid;
 
-        Payroll.findByIdAndUpdate(_payment._id, {
+        paid = paid * mulParram;
+
+        Payroll.findByIdAndUpdate(id, {
             $inc: {
-                diff: mulParram * _payment.paidAmount,
-                paid: mulParram * _payment.paidAmount
+                diff: paid,
+                paid: paid
             }
         }, cb);
     }
@@ -398,7 +405,7 @@ var Payment = function (models, event) {
                         var supplierObject = _payment.supplier;
                         var productObject = {};
 
-                        productObject.product = _payment._id;
+                        productObject.product = _payment.paymentRef;
                         productObject.paid = _payment.paidAmount;
                         productObject.diff = _payment.diff;
 
@@ -433,10 +440,11 @@ var Payment = function (models, event) {
                 };
 
                 var createPayment = function (params, cb) {
-                    var paymentObject = body[0];
+                    var paymentObject = _.clone(body[0]);
                     var payment;
 
-                    paymentObject.invoice._id = params.invoice._id;
+                    paymentObject.invoice = {};
+                    paymentObject.invoice._id = params.invoice.get('_id');
 
                     paymentObject.supplier = params.suppliers;
                     paymentObject.paidAmount = params.totalAmount;
@@ -914,9 +922,11 @@ var Payment = function (models, event) {
         var wId;
         var request;
         var project;
-        var moduleId = req.headers.mId || returnModuleId(req);
+        var moduleId = req.headers.mid || returnModuleId(req);
         var JobsModel = models.get(req.session.lastDb, 'jobs', JobsSchema);
         var type = "Invoiced";
+
+        moduleId = parseInt(moduleId);
 
         Payment = models.get(req.session.lastDb, 'Payment', PaymentSchema);
 
@@ -932,7 +942,7 @@ var Payment = function (models, event) {
                     invoiceId = removed.get('invoice._id');
                     paid = removed.get('paidAmount');
 
-                    if (removed._type !== 'salaryPayment') {
+                    if (invoiceId && (removed._type !== 'salaryPayment')) {
 
                         if (isWtrack) {
                             Invoice = models.get(req.session.lastDb, 'wTrackInvoice', wTrackInvoiceSchema);
@@ -1023,7 +1033,7 @@ var Payment = function (models, event) {
                                 });
                             });
                         });
-                    } else {
+                    } else if (invoiceId) {
                         Invoice = models.get(req.session.lastDb, 'payRollInvoice', payRollInvoiceSchema);
 
                         Invoice.findById(invoiceId, function (err, invoice) {
@@ -1040,8 +1050,11 @@ var Payment = function (models, event) {
                                 }
 
                                 res.status(200).send({success: 'Done'});
+                                composeExpensesAndCache(req);
                             })
                         })
+                    } else {
+                        res.status(200).send({success: 'Done'});
                     }
                 });
             } else {

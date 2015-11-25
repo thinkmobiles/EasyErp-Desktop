@@ -43,6 +43,7 @@ define(["text!templates/Projects/projectInfo/wTracks/generate.html",
                     this.model = options.model;
                     this.wTrackCollection = options.wTrackCollection;
                     this.asyncLoadImgs(this.model);
+                    this.forQuotationGenerate = !!options.forQuotationGenerate;
 
                     _.bindAll(this, 'generateItems');
 
@@ -54,7 +55,8 @@ define(["text!templates/Projects/projectInfo/wTracks/generate.html",
 
                     this.jobsCollection = options.jobsCollection;
 
-                    this.createJob = options.createJob;
+                    this.createJob = options.createJob ? options.createJob : true;
+                    this.quotationDialog = options.quotationDialog;
 
                     this.render();
                 },
@@ -308,7 +310,6 @@ define(["text!templates/Projects/projectInfo/wTracks/generate.html",
                 },
 
                 generateItems: function (e) {
-
                     this.setChangedValueToModel(); // add for setChanges by Hours
 
                     var errors = this.$el.find('.errorContent');
@@ -322,6 +323,7 @@ define(["text!templates/Projects/projectInfo/wTracks/generate.html",
                     var _id = window.location.hash.split('form/')[1];
                     //var nameRegExp = /^[\w\.@]{3,100}$/;
                     var nameRegExp = /^[a-zA-Z0-9\s][a-zA-Z0-9-,\s\.\/\s]+$/;
+                    //var quotationDialog = $('.edit-dialog');
 
                     var filter = {
                         'projectName': {
@@ -359,6 +361,10 @@ define(["text!templates/Projects/projectInfo/wTracks/generate.html",
 
                                 self.wTrackCollection.showMore({count: 50, page: 1, filter: filter});
 
+                                if(self.quotationDialog){
+                                    return self.quotationDialog.generatedWtracks();
+                                }
+
                                 tabs = $(".chart-tabs");
                                 activeTab = tabs.find('.active');
 
@@ -380,7 +386,7 @@ define(["text!templates/Projects/projectInfo/wTracks/generate.html",
                 },
 
                 hideDialog: function () {
-                    $(".edit-dialog").remove();
+                    $(".wTrackDialog").remove();
                 },
 
                 showNewSelect: function (e, prev, next) {
@@ -513,7 +519,7 @@ define(["text!templates/Projects/projectInfo/wTracks/generate.html",
                     });
 
                     this.$el = $(dialog).dialog({
-                        dialogClass: "edit-dialog",
+                        dialogClass: "wTrackDialog",
                         width: 1200,
                         title: "Generate weTrack",
                         buttons: {
