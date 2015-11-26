@@ -761,27 +761,33 @@ var wTrack = function (event, models) {
         /* Taras
          */
         function getTotalHoursInWeek(opt) {
-            totalHoursForWeek = 0;
+           var totalHoursForWeek = 0;
+
             for (var i = 7; i >= 1; i--) {
                 totalHoursForWeek += parseInt(opt[i]);
             }
+
             return totalHoursForWeek;
         };
         function getDaysWithHours(hours, startDateMoment) {
             var dayNumber = 0;
+
             if (hours % 8 === 0) {
                 dayNumber = hours / 8;
             } else {
                 dayNumber = Math.ceil(hours / 8);
             }
+
             if (dayNumber > startDateMoment.endOf('month').date()) {
                 dayNumber = startDateMoment.date() + dayNumber;
                 dayNumber = dayNumber - (parseInt(dayNumber / 30) * 30);
             }
+
             return dayNumber;
         };
 
         function getTotalHoursAndTrackWeek(diff, trackWeek, totalHours) {
+
             if ((diff > 0) && (diff < 8)) {
                 var index;
 
@@ -1029,15 +1035,14 @@ var wTrack = function (event, models) {
 
 
                                 calcCost(function (err, result) {
-                                    if (err) {
-                                     return   console.log(err);
-                                    }
-
                                     var cost = result[0] ? result[0] : 0;
-
                                     var weekArray = element.weekValues;
                                     var diff;
                                     var totalHoursAndTrackWeek;
+
+                                    if (err) {
+                                     return   console.log(err);
+                                    }
 
                                     totalHours = 0;
 
@@ -1373,8 +1378,6 @@ var wTrack = function (event, models) {
                             var data = options;
                             var startDate = new Date(data.startDate);
                             var endDate = data.endDate ? new Date(data.endDate) : '';
-                            var startDateMoment = moment(startDate);
-                            var endDateMoment = moment(startDate);
                             var hours = parseInt(data.hours);
                             var resultArray = [];
                             var diff;
@@ -1402,9 +1405,9 @@ var wTrack = function (event, models) {
                                 startDate = hireDate;
                             }
 
-                            startYear = startDateMoment.year();
-                            startWeek = startDateMoment.isoWeek();
-                            isoWeeks = startDateMoment.isoWeeksInYear();
+                            startYear = moment(startDate).year();
+                            startWeek = moment(startDate).isoWeek();
+                            isoWeeks = moment(startDate).isoWeeksInYear();
                             totalForWeek = getTotalHoursInWeek(opt);
 
                             if (endDate) {
@@ -1412,33 +1415,32 @@ var wTrack = function (event, models) {
                                 if (endDate < hireDate) {
                                     endDate = hireDate;
                                 }
-                                endDateMoment = moment(endDate);
-                                if (startDateMoment.day() === 0 || startDateMoment.day() === 6) {
-                                    startDate = startDateMoment.day(1);
+                                if (moment(startDate).day() === 0 || moment(startDate).day() === 6) {
+                                    startDate = moment(startDate).day(1);
                                     addedWeek = false;
                                 }
 
-                                endYear = endDateMoment.year();
-                                endWeek = endDateMoment.isoWeek();
-                                endDay =endDateMoment.date();
+                                endYear = moment(endDate).year();
+                                endWeek = moment(endDate).isoWeek();
+                                endDay =moment(endDate).date();
 
-                                day = endDateMoment.day();
+                                day = moment(endDate).day();
 
                             } else {
                                 endYear = startYear;
                                 weekNumber = hours / totalForWeek;
-                                startD = startDateMoment.date();
-                                dayNumber = getDaysWithHours(hours,startDateMoment);
+                                startD = moment(startDate).date();
+                                dayNumber = getDaysWithHours(hours,moment(startDate));
 
                                 endWeek = startWeek + Math.ceil(weekNumber) - 1;
 
                                 if (startWeek + weekNumber > moment().isoWeeksInYear()) {
-                                    endYear = startDateMoment.year() + 1;
+                                    endYear = moment(startDate).year() + 1;
                                     endWeek = endWeek - isoWeeks + 1;
-                                    startDate = startDateMoment.year(endYear);
+                                    startDate = moment(startDate).year(endYear);
                                 }
 
-                                newDate = startDateMoment.isoWeek(endWeek);
+                                newDate = moment(startDate).isoWeek(endWeek);
                                 endMonth = moment(newDate).month();
                                 endDate = moment().year(endYear).month(endMonth).isoWeek(endWeek);
                                 endDate.day(startD + dayNumber);
@@ -1498,18 +1500,18 @@ var wTrack = function (event, models) {
                             }
 
                             function firstPart(parallelCb) {
-                                endDate = startDateMoment.date(31);
+                                endDate = moment(startDate).date(31);
                                 setObj(parallelCb, diff, isoWeeks, startDate, startYear, true);
                             }
 
                             function secondPart(parallelCb) {
                                 diff = endWeek;
 
-                                var year = startDateMoment.year();
+                                var year = moment(startDate).year();
 
-                                startDate = endDateMoment.year(year + 1).isoWeek(1).date(1);
-                                startWeek = startDateMoment.isoWeek();
-                                endDate = endDateMoment.isoWeek(endWeek).date(endDay);
+                                startDate = moment(endDate).year(year + 1).isoWeek(1).date(1);
+                                startWeek = moment(startDate).isoWeek();
+                                endDate = moment(endDate).isoWeek(endWeek).date(endDay);
 
                                 setObj(parallelCb, diff, endWeek, startDate, year + 1, false)
                             }
@@ -1561,7 +1563,7 @@ var wTrack = function (event, models) {
                                     if (y === 0) {
                                         obj.week = endWeek - y;
                                         newDate = moment(date).isoWeek(obj.week);
-                                        d = endDateMoment.isoWeek(obj.week);
+                                        d = moment(endDate).isoWeek(obj.week);
                                         day = moment(d).day();
 
                                         if (day === 0) {
