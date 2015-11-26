@@ -10,37 +10,7 @@ describe('USER CRUD', function () {
 
     this.timeout(2000);
 
-    before(function() {
-        agent
-            .post('/user/login')
-            .send({ login: 'admin', pass: '1q2w3eQWE',dbId:'production' })
-            .expect(200)
-            .end(function (err, res) {
-                console.dir(res.body);
-                if (err) {
-                    return done(err);
-                }
-                done();
-            });
 
-    });
-
-
-    var agent = request.agent(url);
-    it('/user/login GET ', function (done) {
-
-        agent
-            .post('/user/')
-            .send({ login: 'admin', pass: '1q2w3eQWE',dbId:'production' })
-            .expect(200)
-            .end(function (err, res) {
-                console.dir(res.body);
-                if (err) {
-                    return done(err);
-                }
-                done();
-            });
-    });
 
     it('/user/ GET ', function (done) {
 
